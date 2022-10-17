@@ -28,6 +28,5 @@ class Strategy(MatchmakingBase):
         ## select a random item
         item = dataset.sample(axis="rows")
 
-        ## send the movie id only
         rand_user_id_int = int(item['userId'].values[0])
         return rand_user_id_int

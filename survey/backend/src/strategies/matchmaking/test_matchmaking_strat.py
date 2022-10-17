@@ -5,6 +5,7 @@ from .abstract_class.machmaking_strategy_base import MatchmakingBase
 class Strategy(MatchmakingBase):
     def __init__(self, path):
         self.__dataset_path = path
+
     @property
     def dataset_path(self):
         return self.__dataset_path
