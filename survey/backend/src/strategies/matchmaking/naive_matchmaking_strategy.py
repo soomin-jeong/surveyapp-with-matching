@@ -2,7 +2,7 @@
 import pandas as pd
 from .abstract_class.machmaking_strategy_base import MatchmakingBase
 
-class Strategy(MatchmakingBase):
+class NaiveStrategy(MatchmakingBase):
     def __init__(self, path):
         self.__dataset_path = path
     @property
@@ -14,7 +14,7 @@ class Strategy(MatchmakingBase):
         self.__dataset_path = path
     
     ## get_offline_user_id() <- change it to..
-    def perform_matchmaking(self, current_ratings):
+    def perform_matchmaking(self):
         ## matchmaking logic here
         ## match with the random user in the db
         ## find out the related dataset by the given id

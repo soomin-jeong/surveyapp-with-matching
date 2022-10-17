@@ -16,7 +16,6 @@ from ...database.models.sqlalchemy_classes.response import Response
 from ...utils.create_item_descriptions import create_item_descriptions
 from .helper_functions import save_ratings, send_next_item_and_current_ratings, send_survey_details
 
-from ...strategies.matchmaking.naive_matchmaking_strategy import Strategy
 ## createa a blueprint for this route to be easily added to root later.
 questionnaire_bp = Blueprint('questionnaire', __name__)
 
