@@ -1,2 +1,7 @@
 survey/frontend/node_modules/*
 **/__pycache__/
+**/.idea/**
+**/*.ps1
+survey/venv/**
+survey/output.txt
+survey/backend/src/api_log.log
