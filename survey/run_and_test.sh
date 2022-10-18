@@ -1,6 +1,6 @@
 #!/bin/bash
 
-## Author: Ananta Lamichhane
+## Author: Ananta Lamichhane, Soo Min Jeong
 
 ########################## INTRODUCTION AND PURPOSE #############################
 ## This script performs all the steps to install and run both
@@ -65,11 +65,11 @@ sleep 5
 echo "checking if the server is up"
 HTTP_CODE=$(curl --write-out "%{http_code}\n" "$API_URL" --output output.txt --silent)
 
-if [$"HTTP_CODE" -ne 200]
+if [ $HTTP_CODE -ne 200 ]
 then
-    echo "API server is not online. Please check"
+    echo "1: API server is not online. Please check. The HTTP_CODE is $HTTP_CODE"
 else
-    echo "API Server is online."
+    echo "1: API Server is online."
 
     cd frontend
     echo "------------------------------------------------------------"
@@ -88,12 +88,13 @@ else
     echo "------------------------------------------------------------"
     echo "checking if the server is up"
     HTTP_CODE=$(curl --write-out "%{http_code}\n" "$SURVEY_URL" --output output.txt --silent)
-    if [$"HTTP_CODE" -ne 200]
+
+    if [$HTTP_CODE -ne 200]
     then
-    echo "Survey server is not online. Please check"
+      echo "2: Survey server is not online. Please check"
     else
-    echo "------------------------------------------------------------"
-    echo "Survey server is on press any key to exit."
+      echo "------------------------------------------------------------"
+      echo "2: Survey server is on press any key to exit."
     cd ..
     read -n 1 -s -r -p "Press any key to continue"
 
