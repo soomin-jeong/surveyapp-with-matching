@@ -23,8 +23,6 @@ class BaseStrategy(metaclass=abc.ABCMeta):
 
 
     @abc.abstractmethod
-    def get_next_item(self, current_ratings):
+    def get_next_item(self, current_ratings) -> str:
+        # returns one movie_id in string
         pass
-
-
-## 
