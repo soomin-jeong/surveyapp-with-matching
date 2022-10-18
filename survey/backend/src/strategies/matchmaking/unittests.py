@@ -23,6 +23,6 @@ def test_naive_strategy_returns_existing_user():
     naive_st = NaiveStrategy(RATINGS_PATH)
     matched_user = naive_st.perform_matchmaking()
 
-    assert matched_user in ratings['userId']
+    assert matched_user in ratings['userId'], "the matched user by naive strategy does not exist in the offline uesrs"
 
 
