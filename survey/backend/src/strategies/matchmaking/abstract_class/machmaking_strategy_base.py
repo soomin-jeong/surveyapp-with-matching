@@ -11,7 +11,7 @@ class MatchmakingBase(metaclass = ABCMeta):
 
 
     @abstractmethod
-    def perform_matchmaking(self) -> int:
-        pass
+    def get_matched_offline_user(self) -> int:
+        raise NotImplementedError("{} should be implemented".format(self.__class__.__name__))
 
 

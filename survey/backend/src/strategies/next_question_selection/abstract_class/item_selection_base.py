@@ -2,7 +2,6 @@
 import abc
 import pandas as pd
 
-
 ## abstract SQLAlchemy Model class
 ## this class does not exist as table in db, only the instantiations do
 
@@ -13,6 +12,6 @@ class BaseStrategy(metaclass=abc.ABCMeta):
         self.rating_df: pd.DataFrame = rating_df
 
     @abc.abstractmethod
-    def get_next_item(self, current_ratings) -> str:
+    def get_next_item(self, current_ratings: list[dict[str, str]]) -> str:
         # returns one movie_id in string
-        pass
+        raise NotImplementedError("{} should be implemented".format(self.__class__.__name__))
