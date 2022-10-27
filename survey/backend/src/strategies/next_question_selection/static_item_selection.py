@@ -3,9 +3,9 @@ import pandas as pd
 import numpy as np
 from .abstract_class.item_selection_base import BaseStrategy
 import ast
-## instantiations of base strategy
-## add new classes here for custom item selection strategies
-class Strategy(BaseStrategy):
+
+
+class StaticItemSelectionStrategy(BaseStrategy):
     def __init__(self, rating_df: pd.DataFrame):
         self.rating_df = rating_df
 

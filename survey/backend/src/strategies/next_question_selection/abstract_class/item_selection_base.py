@@ -12,6 +12,11 @@ class BaseStrategy(metaclass=abc.ABCMeta):
         self.rating_df: pd.DataFrame = rating_df
 
     @abc.abstractmethod
-    def get_next_item(self, current_ratings: list[dict[str, str]]) -> str:
+    def get_next_item(self, current_ratings: str) -> str:
+        """
+        Args:
+            current_ratings: ratings in dict style string (key: movieId, value: rating)
+            i.e. {'3211': '4.5'}
+        """
         # returns one movie_id in string
         raise NotImplementedError("{} should be implemented".format(self.__class__.__name__))

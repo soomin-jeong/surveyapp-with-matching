@@ -92,14 +92,12 @@ def send_next_item_and_current_ratings(participant_token):
 
 
 
-    ## new item selection strategies are stored in the src/matchmaking folder
+    ## new item selection strategies are stored in the src/next_question_selection folder
     ## each file has a different name but contains a class called Strategy in it
 
     ## load the related strategy file (module) from the directory
     loaded_module = importlib.import_module(f'.{rel_strategy_name}', 'backend.src.strategies.next_question_selection')
-    #loaded_module = importlib.import_module(f'.{rel_strategy_name}', '..strategies.item_selection')
-    
-    
+
     ## load the Strategy class from the loaded module
     strategy_class_obj = getattr(loaded_module, 'Strategy')
 
@@ -110,8 +108,9 @@ def send_next_item_and_current_ratings(participant_token):
         next_item = create_item_descriptions(strategy_class_instance.get_next_item(all_curr_ratings))
         payload ={"current_ratings": json.loads(all_curr_ratings), "next_item": next_item}
         return payload
-    
-    return {'Error':'Eror in send_next_item_and_current_ratings in /questionnaire'}
+
+    else:
+        raise Exception({'Error':'Eror in send_next_item_and_current_ratings in /questionnaire'})
 
 
 
