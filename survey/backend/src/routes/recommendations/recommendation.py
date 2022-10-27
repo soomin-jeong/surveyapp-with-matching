@@ -46,7 +46,7 @@ def handle_recommendations():
         ## instantiate the loaded class with the dataset path in question
         strategy_class_instance = strategy_class_obj(rel_dataset.file_path)
         if strategy_class_instance:
-            matched_offline_user_id = strategy_class_instance.perform_matchmaking(current_ratings)
+            matched_offline_user_id = strategy_class_instance.get_matched_offline_user(current_ratings)
             return send_recommendations(token, matched_offline_user_id, rel_reclist_files)
 
         return {'Error': 'Please check function send_recommendation of /recommendation route.'}
