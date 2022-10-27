@@ -5,3 +5,4 @@ survey/frontend/node_modules/*
 survey/venv/**
 survey/output.txt
 survey/backend/src/api_log.log
+survey/backend/data/results/online_eval/*.csv
