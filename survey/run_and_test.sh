@@ -63,7 +63,7 @@ echo "Running backend on port 5000."
 gunicorn --bind 0.0.0.0:5000 backend.src.app:app --daemon
 sleep 5
 echo "checking if the server is up"
-HTTP_CODE=$(curl --write-out "%{http_code}\n" "$API_URL" --output output.txt --silent)
+HTTP_CODE=$(curl --write-out "%{http_code}\n" "$API_URL/survey" --output output.txt --silent)
 
 if [ $HTTP_CODE -ne 200 ]
 then
