@@ -180,13 +180,12 @@ You'll get a list of processes with their IDs, names and ports they're occupying
 3. Follow install instruction above to start the API again.  
 
 To restart the web application follow the same steps above but with process name "node" and port 3000.
-  </details>
-
 
 ### 5000 port always in use
 5000 port is used by the backend server. However, there was a report where port 5000 is always in use by some mac users. 
 It turned out that mac was using this port for the airplay feature.
 System Preferenes > Home Sharing > Airplay Receiver (Uncheck)
 For more information, please visit [here](https://medium.com/pythonistas/port-5000-already-in-use-macos-monterey-issue-d86b02edd36c).
+</details>
 
   
