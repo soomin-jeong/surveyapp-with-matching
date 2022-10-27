@@ -21,8 +21,8 @@
 ## run using: source run_and_test.sh
 
 
-API_URL="http://localhost:5000"
-SURVEY_URL="http://localhost:3000/survey"
+BACKEND_URL="http://localhost:5000/survey"
+FRONTEND_URL="http://localhost:3000/survey"
 
 ## copy files from examples to appropriate places
 echo "------------------------------------------------------------"
@@ -63,7 +63,7 @@ echo "Running backend on port 5000."
 gunicorn --bind 0.0.0.0:5000 backend.src.app:app --daemon
 sleep 5
 echo "checking if the server is up"
-HTTP_CODE=$(curl --write-out "%{http_code}\n" "$API_URL/survey" --output output.txt --silent)
+HTTP_CODE=$(curl --write-out "%{http_code}\n" "$BACKEND_URL" --output output.txt --silent)
 
 if [ $HTTP_CODE -ne 200 ]
 then
@@ -87,7 +87,7 @@ else
     sleep 5
     echo "------------------------------------------------------------"
     echo "checking if the server is up"
-    HTTP_CODE=$(curl --write-out "%{http_code}\n" "$SURVEY_URL" --output output.txt --silent)
+    HTTP_CODE=$(curl --write-out "%{http_code}\n" "$FRONTEND_URL" --output output.txt --silent)
 
     if [$HTTP_CODE -ne 200]
     then
