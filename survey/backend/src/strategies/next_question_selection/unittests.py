@@ -5,7 +5,7 @@ import numpy as np
 
 from collections import Counter
 from random import choice
-from survey.backend.src.strategies.next_question_selection.rated_by_the_most_strategy import RatedByTheMostStrategy
+from survey.backend.src.strategies.next_question_selection.rated_by_the_most_strategy import Strategy
 
 DUMMY_RATINGS = pd.DataFrame(data=np.array([['459', '5618', '5.0', '1520233615'],
                                             ['477', '5618', '4.0', '1201159360'],
@@ -21,7 +21,7 @@ DUMMY_RATINGS = pd.DataFrame(data=np.array([['459', '5618', '5.0', '1520233615']
 
 
 def test_rated_by_most_st_has_the_most_ratings():
-    rated_by_most_st = RatedByTheMostStrategy(DUMMY_RATINGS)
+    rated_by_most_st = Strategy(DUMMY_RATINGS)
 
     # select a random movie and add it as a movie which is already rated by an online user
     random_movie = choice(DUMMY_RATINGS['movieId'])

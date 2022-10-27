@@ -3,7 +3,7 @@ import pandas as pd
 from .abstract_class.machmaking_strategy_base import MatchmakingBase
 
 
-class NaiveStrategy(MatchmakingBase):
+class Strategy(MatchmakingBase):
     def __init__(self, rating_df: pd.DataFrame):
         self.rating_df = rating_df
 

@@ -5,7 +5,7 @@ from .abstract_class.item_selection_base import BaseStrategy
 import ast
 
 
-class StaticItemSelectionStrategy(BaseStrategy):
+class Strategy(BaseStrategy):
     def __init__(self, rating_df: pd.DataFrame):
         self.rating_df = rating_df
 
