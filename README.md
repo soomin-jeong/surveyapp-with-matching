@@ -129,7 +129,8 @@ The results from evaluations are saved in backend/results. The results of online
   
 ## Customization
 <details>
-  <summary> About implementing custom strategies and making UI changes. </summary>
+    <summary> About implementing custom strategies and making UI changes. </summary>
+
 ### Adding your own next question selection strategy.
 Say you want to have your own logic in place where you select the next item to be rated by the participant based on current ratings and some other criteria (e.g. same genre movies, one of the most popular movies, same director, etc.)\
  This can be achieved by implementing the abstract class Strategy in src/strategies/item_selection/abstract_class/item_selection_base.py
