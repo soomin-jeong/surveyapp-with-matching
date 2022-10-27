@@ -2,13 +2,13 @@ import json
 import importlib
 from sqlalchemy import exc
 
-from ...utils.create_item_descriptions import create_item_descriptions
-from ...app import db
-from ...database.models.sqlalchemy_classes.dataset import Dataset
-from ...database.models.sqlalchemy_classes.survey import Survey
-from ...database.models.sqlalchemy_classes.participant import Survey_Participant
-from ...database.models.sqlalchemy_classes.response import Response
-from ...database.models.sqlalchemy_classes.questionnaire import Questionnaire
+from survey.backend.src.utils.create_item_descriptions import create_item_descriptions
+from survey.backend.src.app import db
+from survey.backend.src.database.models.sqlalchemy_classes.dataset import Dataset
+from survey.backend.src.database.models.sqlalchemy_classes.survey import Survey
+from survey.backend.src.database.models.sqlalchemy_classes.participant import Survey_Participant
+from survey.backend.src.database.models.sqlalchemy_classes.response import Response
+from survey.backend.src.database.models.sqlalchemy_classes.questionnaire import Questionnaire
 
 
 
@@ -88,15 +88,12 @@ def send_next_item_and_current_ratings(participant_token):
     rel_survey = db.session.query(Survey).filter_by(id=rel_ques.survey_id).first()
     rel_dataset = db.session.query(Dataset).filter_by(id=rel_survey.dataset_id).first()
     rel_strategy_name = rel_survey.item_selection_strategy
-    #print(f"strategy name = {rel_strategy_name}")
-
-
 
     ## new item selection strategies are stored in the src/matchmaking folder
     ## each file has a different name but contains a class called Strategy in it
 
     ## load the related strategy file (module) from the directory
-    loaded_module = importlib.import_module(f'.{rel_strategy_name}', 'backend.src.strategies.next_question_selection')
+    loaded_module = importlib.import_module(f'.{rel_strategy_name}', 'backend.src.strategies.next_question_selection.implemented_strategies')
     #loaded_module = importlib.import_module(f'.{rel_strategy_name}', '..strategies.item_selection')
     
     
@@ -105,6 +102,7 @@ def send_next_item_and_current_ratings(participant_token):
 
     ## instantiate the loaded class with the dataset path in question
     strategy_class_instance = strategy_class_obj(rel_dataset.file_path)
+
     if strategy_class_instance:
     ## if the question number shows it's first question asked
         next_item = create_item_descriptions(strategy_class_instance.get_next_item(all_curr_ratings))

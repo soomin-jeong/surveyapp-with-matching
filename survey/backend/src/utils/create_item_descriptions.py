@@ -23,12 +23,12 @@ def create_item_descriptions(item_id):
         item_id ([int]): ids of the items (from dataset)
     """
     try:
-        movies_file_abspath = os.path.abspath("backend/data/datasets/movielens_small/movies.csv")
+        movies_file_abspath = os.path.abspath("survey/backend/data/datasets/movielens_small/movies.csv")
         #movies_file_abspath = os.path.abspath('../data/datasets/movielens_small/movies.csv')
         item_labels_df = pd.read_csv(movies_file_abspath, dtype='str')
         #print(item_labels_df)
         
-        links_file_abspath = os.path.abspath("backend/data/datasets/movielens_small/links.csv")
+        links_file_abspath = os.path.abspath("survey/backend/data/datasets/movielens_small/links.csv")
         #links_file_abspath = os.path.abspath("../data/datasets/movielens_small/links.csv")
         imdb_id_links = pd.read_csv(links_file_abspath,dtype='str')
         ## build imdb ids from the imdb <-> omdb <-> movieId relationships extracted from links.csv
@@ -57,8 +57,6 @@ def create_item_descriptions(item_id):
 
         }
 
-
-        #  print(res)
         return description
     except FileNotFoundError as e:
         return f'ERROR: module: utils.create_item_descriptions, error:{e}'

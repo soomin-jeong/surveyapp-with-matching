@@ -38,7 +38,7 @@ def handle_recommendations():
         ## each file has a different name but contains a class called Strategy in it
 
         ## load the related strategy file (module) from the directory
-        loaded_module = importlib.import_module(f'.{rel_matchmaking_strategy}', 'backend.src.strategies.matchmaking')
+        loaded_module = importlib.import_module(f'.{rel_matchmaking_strategy}', 'backend.src.strategies.matchmaking.implemented_strategies')
         #loaded_module = importlib.import_module(f'.{rel_strategy_name}', '..strategies.item_selection')
         ## load the Strategy class from the loaded module
         strategy_class_obj = getattr(loaded_module, 'Strategy')

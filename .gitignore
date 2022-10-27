@@ -2,6 +2,9 @@ survey/frontend/node_modules/*
 **/__pycache__/
 **/.idea/**
 **/*.ps1
-survey/venv/**
+survey/backend/data/results/online_eval/*.csv
+survey/frontend/package-lock.json
 survey/output.txt
-survey/backend/src/api_log.log
+survey/venv/**
+**/api_log.log
+**/.env

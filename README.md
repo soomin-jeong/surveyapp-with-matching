@@ -119,8 +119,8 @@ Certain directories and file name conventions must be followed so that the relev
 2. To add a new recommendation list for online evaluation, put the relevant recommendation list file in the recommendation_lists directory. The name of the file identifies the recommendation lists file (<filename>.csv) while creating and managing the survey.
 
 #### 5. Add next item selection and matchmaking strategies
-1. To use custom next-item selection strategy, implement the abstract class called BaseStrategy in file item_selection_base.py. The implemented class must be named "Strategy". The file must be placed in the backend/src/strategies/item_selection directory. The name of the file is used to identify the strategy in survey creation and management.
-2. To use custom matchmaking strategy, implement the abstract class called MatchmakingBase in file matchmaking_strategy_base.py. The implemented class must be named "Strategy". The file must be placed in the backend/src/strategies/item_selection directory. The name of the file is used to identify the strategy in survey creation and management.
+1. To use custom next-item selection strategy, implement the abstract class called BaseStrategy in file item_selection_base.py. The implemented class must be named "Strategy". The file must be placed in the `backend/src/strategies/item_selection/implemented_strategies` directory. The name of the file is used to identify the strategy in survey creation and management.
+2. To use custom matchmaking strategy, implement the abstract class called MatchmakingBase in file matchmaking_strategy_base.py. The implemented class must be named "Strategy". The file must be placed in the `backend/src/strategies/item_selectionimplemented_strategies` directory. The name of the file is used to identify the strategy in survey creation and management.
 
 #### 6. Get evaluation results
 The results from evaluations are saved in backend/results. The results of online evaluations (surveys) are denoted by the respective survey names.
@@ -133,8 +133,8 @@ The results from evaluations are saved in backend/results. The results of online
 
 ### Adding your own next question selection strategy.
 Say you want to have your own logic in place where you select the next item to be rated by the participant based on current ratings and some other criteria (e.g. same genre movies, one of the most popular movies, same director, etc.)\
- This can be achieved by implementing the abstract class Strategy in src/strategies/item_selection/abstract_class/item_selection_base.py
- Make sure the implemented class is named Strategy and is placed inside the src/strategies/item_selection directory.\
+ This can be achieved by implementing the abstract class Strategy in `src/strategies/item_selection/abstract_class/item_selection_base.py`
+ Make sure the implemented class is named Strategy and is placed inside the `src/strategies/item_selection/implemented_strategies` directory.\
  When implemented correctly, the new strategy returns the next item that should be displayed to the participant based on your desired logic.
  
 ### Adding your own matchmaking strategy.

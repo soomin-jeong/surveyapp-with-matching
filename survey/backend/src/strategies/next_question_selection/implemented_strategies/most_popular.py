@@ -2,7 +2,7 @@ import json
 import pandas as pd
 import numpy as np
 import random
-from .abstract_class.item_selection_base import BaseStrategy
+from survey.backend.src.strategies.next_question_selection.abstract_class.item_selection_base import BaseStrategy
 import ast
 ## instantiations of base strategy
 ## add new classes here for custom item selection strategies
