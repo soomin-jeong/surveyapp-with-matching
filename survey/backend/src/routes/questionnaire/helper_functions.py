@@ -1,5 +1,7 @@
 import json
 import importlib
+import pandas as pd
+
 from sqlalchemy import exc
 
 from survey.backend.src.utils.create_item_descriptions import create_item_descriptions
@@ -94,22 +96,24 @@ def send_next_item_and_current_ratings(participant_token):
 
     ## load the related strategy file (module) from the directory
     loaded_module = importlib.import_module(f'.{rel_strategy_name}', 'backend.src.strategies.next_question_selection.implemented_strategies')
-    #loaded_module = importlib.import_module(f'.{rel_strategy_name}', '..strategies.item_selection')
-    
     
     ## load the Strategy class from the loaded module
     strategy_class_obj = getattr(loaded_module, 'Strategy')
 
     ## instantiate the loaded class with the dataset path in question
-    strategy_class_instance = strategy_class_obj(rel_dataset.file_path)
+    rating_df = pd.read_csv(filepath_or_buffer=rel_dataset.file_path, sep=',', dtype='str')
+    strategy_class_instance = strategy_class_obj(rating_df)
 
-    if strategy_class_instance:
-    ## if the question number shows it's first question asked
+    try:
+        ## if the question number shows it's first question asked
         next_item = create_item_descriptions(strategy_class_instance.get_next_item(all_curr_ratings))
-        payload ={"current_ratings": json.loads(all_curr_ratings), "next_item": next_item}
+        payload = {"current_ratings": json.loads(all_curr_ratings), "next_item": next_item}
         return payload
-    
-    return {'Error':'Eror in send_next_item_and_current_ratings in /questionnaire'}
+
+    except Exception as e:
+        print(f"Unexpected error from send_next_item_and_current_ratings in /questionnaire")
+        raise
+
 
 
 
