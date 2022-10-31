@@ -6,7 +6,7 @@ class HierarchicalCluster:
         # depth is the level of the hierarchy
         # it is highly relevant with the number of questions to ask to users.
         # If the cluster has N depths, users will be asked N questions to match the user with a cluster
-        self.depth = 3
+        self.depth = 0
 
     def get_depth(self):
         return self.depth
