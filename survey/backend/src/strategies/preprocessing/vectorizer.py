@@ -1,15 +1,35 @@
+import pandas as pd
+import numpy as np
 
 
 class Vectorizer:
-    def __init__(self, rating_df):
+    def __init__(self, rating_df: pd.DataFrame):
         self.rating_df = rating_df
-        
-    def compress_sparse_ids(self):
-        user_ids = self.rating_df["userId"].unique().tolist()
-        user2user_encoded = {x: i for i, x in enumerate(user_ids)}
+        self.rating_matrix = self.merge_and_transpose_ratings(self.rating_df)
 
-        movie_ids = self.rating_df["movieId"].unique().tolist()
-        movie2movie_encoded = {x: i for i, x in enumerate(movie_ids)}
+    def merge_and_transpose_ratings(self, rating_df: pd.DataFrame) -> pd.DataFrame:
+        unique_users = rating_df['userId'].unique()
+        unique_users.sort()
+        unique_items = rating_df['movieId'].unique()
+        unique_items.sort()
 
-        self.rating_df["user"] = self.rating_df["userId"].map(user2user_encoded)
-        self.rating_df["movie"] = self.rating_df["movieId"].map(movie2movie_encoded)
+        # generate empty rating dataframe [# users * # items]
+        rating_matrix = pd.DataFrame([[None] * len(unique_items)] * len(unique_users))
+
+        # rename the index and columns (index=user_id, col=item_id)
+        idx_name_mapper = {}
+        col_name_mapper = {}
+
+        for idx, user_id in enumerate(unique_users):
+            idx_name_mapper.update({idx: user_id})
+
+        for idx, item_id in enumerate(unique_items):
+            col_name_mapper.update({idx: item_id})
+
+        rating_matrix = rating_matrix.rename(index=idx_name_mapper, columns=col_name_mapper)
+
+        # go through every row in ratings and update the ratings matrix
+        for idx, row in rating_df.iterrows():
+            rating_matrix.loc[row['userId'], row['movieId']] = row['rating']
+
+        return rating_matrix
