@@ -11,3 +11,7 @@ class HierarchicalCluster:
     def get_depth(self):
         return self.depth
 
+    def get_initial_cluster_num_by_elbow_method(self):
+        return None
+
+

@@ -40,12 +40,12 @@ DUMMY_RATINGS2 = pd.DataFrame(data=np.array([[459, 5618, 5, 1520233615],
 
 
 class VectorizerTest(unittest.TestCase):
+    vectorizer = None
 
-    # using init instead of setUp because it will be shared by many tests
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.vectorizer = Vectorizer(DUMMY_RATINGS2)
-        self.compressed_df = self.vectorizer.rating_df
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.vectorizer = Vectorizer(DUMMY_RATINGS2)
+        cls.compressed_df = cls.vectorizer.rating_df
 
     # tests if the data frame from the `ratings.csv` is successfully transposed so that the columns are the items
     def test_transpose_to_rating_matrix(self):
