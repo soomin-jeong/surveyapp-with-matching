@@ -29,6 +29,8 @@ from survey.backend.src.strategies.preprocessing.matrix_builder import MatrixBui
 Expected to be clustered: (((459), (477)), ((298), (219)))
 '''
 
+SAMPLE_DATA = pd.read_csv('/Users/JeongSooMin/Documents/workspace/surveyapp-with-matching/survey/backend/data/datasets/movielens_small/ratings.csv')
+
 
 DUMMY_RATINGS2 = pd.DataFrame(data=np.array([[459, 5618, 5, 1520233615],
                                              [477, 5618, 5, 1201159360],
@@ -56,9 +58,6 @@ DUMMY_RATINGS3 = pd.DataFrame(data=np.array([[459, 5618, 5, 1520233615],
                               columns=['userId', 'movieId', 'rating', 'timestamp'])
 
 
-SAMPLE_DATA = pd.read_csv('/Users/JeongSooMin/Documents/workspace/surveyapp-with-matching/survey/backend/data/datasets/movielens_small/ratings.csv')
-
-
 class VectorizerTest(unittest.TestCase):
     vectorizer = None
 
@@ -82,6 +81,7 @@ class VectorizerTest(unittest.TestCase):
         assert TRANSPOSED_MATRIX.equals(rating_matrix)
 
 
+
 class HierarchicalClusterTest(unittest.TestCase):
 
     @classmethod
@@ -90,15 +90,42 @@ class HierarchicalClusterTest(unittest.TestCase):
         cls.hc3 = HierarchicalCluster(DUMMY_RATINGS3)
 
     def test_HC_clusters_into_two_given_users_less_than_5(self):
-        k = self.hc2.get_desriable_cluster_num_with_elbow_method(self.hc2.ratings_df)
-        assert k == 2
+        root_cluster = self.hc2.root_cluster
+        assert len(root_cluster.child_clusters) == 2
+
+    def test_HC_clusters_into_right_depth(self):
+        assert self.hc2.depth == 2
 
     def test_HC_clusters_into_two_given_users_more_than_5(self):
-        # expected clusters based on the inertia: (219, 297, 298) (412, 459, 477)
-        k = self.hc3.get_desriable_cluster_num_with_elbow_method(self.hc3.ratings_df)
-        assert k == 2
+        root_cluster = self.hc3.root_cluster
+        assert len(root_cluster.child_clusters) == 2
 
-    def test_HC_classifies_upto_expected_depth(self):
-        assert self.hc2.depth == 3
+    def test_root_cluster_contains_all_users(self):
+        # using set instead of unique for sorting
+        user_ids = self.hc2.ratings_df['userId'].unique()
+        user_ids.sort()
+        assert self.hc2.root_cluster.user_ids == user_ids.tolist()
+
+    def test_leaf_clusters_have_only_one_user(self):
+
+        def find_leaf_clusters(curr_cluster, leaf_clusters):
+            if not curr_cluster.child_clusters:
+                leaf_clusters.append(curr_cluster)
+            else:
+                for each_child in curr_cluster.child_clusters:
+                    find_leaf_clusters(each_child, leaf_clusters)
+
+        leaf_clusters = []
+        find_leaf_clusters(self.hc3.root_cluster, leaf_clusters)
+
+        for each_leaf in leaf_clusters:
+            if each_leaf.user_cnt != 1:
+                self.fail("the leaf cluster does not have 1 user")
+
+
+    @unittest.skip("Too slow with 45 users")
+    def test_HC_clusters_sample_data_recursively(self):
+        self.hc4 = HierarchicalCluster(SAMPLE_DATA)
+        pass
 
 
