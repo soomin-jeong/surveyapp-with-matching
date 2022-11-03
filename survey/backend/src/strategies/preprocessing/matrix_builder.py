@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 
-class Vectorizer:
+class MatrixBuilder:
     def __init__(self, rating_df: pd.DataFrame):
         self.rating_df = rating_df
         self.rating_matrix = self.merge_and_transpose_ratings(self.rating_df)

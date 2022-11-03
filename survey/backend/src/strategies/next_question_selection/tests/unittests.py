@@ -71,7 +71,3 @@ def test_rated_by_most_st_has_the_most_ratings():
 
     assert random_from_most_rated_movie_ids in most_common_movie_ids
 
-
-def test_if_implemented_strategies_contain_only_one_strategy():
-    assert 1 == 2
-
