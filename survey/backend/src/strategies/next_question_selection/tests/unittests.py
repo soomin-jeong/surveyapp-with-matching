@@ -1,11 +1,11 @@
-import os
 import pandas as pd
 import json
 import numpy as np
 
 from collections import Counter
 from random import choice
-from survey.backend.src.strategies.next_question_selection.rated_by_the_most_strategy import Strategy
+from survey.backend.src.strategies.next_question_selection.implemented_strategies.rated_by_the_most_strategy import Strategy
+
 
 DUMMY_RATINGS = pd.DataFrame(data=np.array([['459', '5618', '5.0', '1520233615'],
                                             ['477', '5618', '4.0', '1201159360'],
@@ -20,11 +20,46 @@ DUMMY_RATINGS = pd.DataFrame(data=np.array([['459', '5618', '5.0', '1520233615']
                              columns=['userId', 'movieId', 'rating', 'timestamp'])
 
 
+'''
++-----+------+---+------------+
+| 459 | 5618 | 5 | 1520233615 |
++-----+------+---+------------+
+| 477 | 5618 | 5 | 1201159360 |
++-----+------+---+------------+
+| 298 | 5618 | 1 | 1447598312 |
++-----+------+---+------------+
+| 219 | 5618 | 1 | 1194685902 |
++-----+------+---+------------+
+| 459 | 1262 | 1 | 1178293076 |
++-----+------+---+------------+
+| 477 | 1262 | 5 | 1020802351 |
++-----+------+---+------------+
+| 298 | 1084 | 1 | 1184619962 |
++-----+------+---+------------+
+| 219 | 1084 | 5 | 974938169  |
++-----+------+---+------------+
+Expected to be clustered: (((459), (477)), ((298), (219)))
+'''
+
+
+DUMMY_RATINGS2 = pd.DataFrame(data=np.array([[459, 5618, 5, 1520233615],
+                                             [477, 5618, 5, 1201159360],
+                                             [298, 5618, 1, 1447598312],
+                                             [219, 5618, 1, 1194685902],
+                                             [459, 1262, 1, 1178293076],
+                                             [477, 1262, 5, 1020802351],
+                                             [298, 1084, 1, 1184619962],
+                                             [219, 1084, 5, 974938169]]),
+                              columns=['userId', 'movieId', 'rating', 'timestamp'])
+
+
 def test_rated_by_most_st_has_the_most_ratings():
     rated_by_most_st = Strategy(DUMMY_RATINGS)
 
     # select a random movie and add it as a movie which is already rated by an online user
     random_movie = choice(DUMMY_RATINGS['movieId'])
+
+    # dummy input for get_next_item
     current_ratings_dict = {random_movie: 5}
     random_from_most_rated_movie_ids = rated_by_most_st.get_next_item(json.dumps(current_ratings_dict))
 
@@ -35,5 +70,4 @@ def test_rated_by_most_st_has_the_most_ratings():
     most_common_movie_ids = [each[0] for each in most_common_movies]
 
     assert random_from_most_rated_movie_ids in most_common_movie_ids
-
 

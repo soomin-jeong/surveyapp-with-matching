@@ -2,14 +2,15 @@ from flask import Blueprint, request
 import json
 from flask_cors import cross_origin
 import importlib
+import pandas as pd
 
 
-from ...app import db
-from ...database.models.sqlalchemy_classes.questionnaire import Questionnaire
-from ...database.models.sqlalchemy_classes.survey import Survey
-from ...database.models.sqlalchemy_classes.participant import Survey_Participant
-from ...database.models.sqlalchemy_classes.response import Response
-from ...database.models.sqlalchemy_classes.dataset import Dataset
+from survey.backend.src.app import db
+from survey.backend.src.database.models.sqlalchemy_classes.questionnaire import Questionnaire
+from survey.backend.src.database.models.sqlalchemy_classes.survey import Survey
+from survey.backend.src.database.models.sqlalchemy_classes.participant import Survey_Participant
+from survey.backend.src.database.models.sqlalchemy_classes.response import Response
+from survey.backend.src.database.models.sqlalchemy_classes.dataset import Dataset
 from .helper_functions import send_recommendations, save_recom_ratings
 ## createa a blueprint for this route to be easily added to root later.
 recommendation_bp = Blueprint('recommendation', __name__)
@@ -38,19 +39,22 @@ def handle_recommendations():
         ## each file has a different name but contains a class called Strategy in it
 
         ## load the related strategy file (module) from the directory
-        loaded_module = importlib.import_module(f'.{rel_matchmaking_strategy}', 'backend.src.strategies.matchmaking')
+        loaded_module = importlib.import_module(f'.{rel_matchmaking_strategy}', 'backend.src.strategies.matchmaking.implemented_strategies')
         #loaded_module = importlib.import_module(f'.{rel_strategy_name}', '..strategies.item_selection')
         ## load the Strategy class from the loaded module
         strategy_class_obj = getattr(loaded_module, 'Strategy')
         print(f"recomendations, current ratings = {current_ratings}")
+
         ## instantiate the loaded class with the dataset path in question
-        strategy_class_instance = strategy_class_obj(rel_dataset.file_path)
-        if strategy_class_instance:
+        rating_df = pd.read_csv(filepath_or_buffer=rel_dataset.file_path, sep=',', dtype='str')
+        strategy_class_instance = strategy_class_obj(rating_df)
+
+        try:
             matched_offline_user_id = strategy_class_instance.get_matched_offline_user(current_ratings)
             return send_recommendations(token, matched_offline_user_id, rel_reclist_files)
-
-        return {'Error': 'Please check function send_recommendation of /recommendation route.'}
-
+        except Exception as e:
+            print(f"Unexpected error from send_recommendation in /recommendation")
+            raise
 
     elif request.method == "POST":
 

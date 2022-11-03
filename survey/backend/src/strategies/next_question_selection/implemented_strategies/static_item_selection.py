@@ -1,7 +1,7 @@
 import json
 import pandas as pd
 import numpy as np
-from .abstract_class.item_selection_base import BaseStrategy
+from survey.backend.src.strategies.next_question_selection.abstract_class.item_selection_base import BaseStrategy
 import ast
 
 

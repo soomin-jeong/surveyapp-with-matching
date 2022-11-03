@@ -8,9 +8,6 @@ from .helper_functions import save_ratings, send_next_item_and_current_ratings, 
 ## create a blueprint for this route to be easily added to root later.
 questionnaire_bp = Blueprint('questionnaire', __name__)
 
-
-
-
 @questionnaire_bp.route('/questionnaire', methods = ['POST', 'GET'])
 @cross_origin(supports_credentials=True)
 def handle_questionnaire():
@@ -25,18 +22,17 @@ def handle_questionnaire():
 
         ## this route handles the ratings provided by the survey participant for each item
         ## format of data from frontend
-        ''' {
-            'token': 'jdasfhkjh',
-            'ratings': '{234: 5.0, 5739:3.5,..}'
+        ''' 
+            request.get_json() returns, for example,
+            {
+                'token': 'jdasfhkjh',
+                'ratings': '{234: 5.0, 5739:3.5,..}'
             }
         '''
         ## get data from the body of the post request.
         post_json_data = json.loads(request.get_json()) ## questionnaire_response
-        tok = (post_json_data)['token']
-        ratings = post_json_data['ratings']
+        tok, ratings = post_json_data['token'], post_json_data['ratings']
 
-        #print(f"ratings from frontend : {ratings}")
-        
         ## call helper function to save the rating provided by the frontend to the db
         save_ratings(tok, ratings)
 
@@ -60,17 +56,15 @@ def handle_questionnaire():
                         'actors': 'Michael Douglas, Deborah Kara Unger, Sean Penn', 
                         'plot': 'After a wealthy San Francisco....', 
                         'poster': 'https://<poster URL>'}}
-
                 }
             }
         '''
-        #print(next_item_and_ratings)
 
         ## return the item description to the frontend
         return next_item_and_ratings
-    else:
-        ## on rare occassions when the request does not correspond to eithre get or post
-        return "Error: Illegal request."
+
+    ## on rare occassions when the request does not correspond to eithre get or post
+    raise Exception("Error: Illegal request.")
 
 
 
