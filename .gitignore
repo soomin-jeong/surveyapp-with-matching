@@ -1,10 +1,17 @@
-survey/frontend/node_modules/*
+# PyCharm (IDE) related directories
 **/__pycache__/
 **/.idea/**
 **/*.ps1
-survey/backend/data/results/online_eval/*.csv
+
+# files generated when running the servers (log)
+survey/frontend/node_modules/*
+**/api_log.log
 survey/frontend/package-lock.json
 survey/output.txt
 survey/venv/**
-**/api_log.log
+
+# files generated while receiving the results
+survey/backend/data/results/online_eval/*.csv
+
+# environmental variables to be kept safe
 **/.env
