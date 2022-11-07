@@ -18,23 +18,14 @@ class MatrixBuilder:
         self.original_unique_users_cnt = len(self.original_unique_users)
         self.original_unique_items_cnt = len(self.original_unique_items)
 
+        self.rating_matrix = self.merge_and_transpose_ratings(self.rating_df)
         self.drop_users_with_too_sparse_data()
 
-        self.rating_matrix = self.merge_and_transpose_ratings(self.rating_df)
-
     def drop_users_with_too_sparse_data(self):
-        # drop users who rated less than 1% of the items
-        if self.original_unique_users_cnt > 30:
-            rating_cnt = self.rating_df.groupby([USER_COL_NAME])[ITEM_COL_NAME].count()
-            users_rated_certain_num_of_items = rating_cnt[rating_cnt > self.original_unique_items_cnt * 0.01].index.tolist()
-            self.rating_df = self.rating_df[self.rating_df[USER_COL_NAME].isin(users_rated_certain_num_of_items)]
-
-        # drop items which were rated by less than 1% of the users
-        if self.original_unique_items_cnt > 30:
-            rating_cnt = self.rating_df.groupby([ITEM_COL_NAME])[USER_COL_NAME].count()
-            items_rated_by_certain_num_of_users = rating_cnt[rating_cnt > self.original_unique_users_cnt * 0.01].index.tolist()
-            self.rating_df = self.rating_df[self.rating_df[ITEM_COL_NAME].isin(items_rated_by_certain_num_of_users)]
-
+        # items rated by more than 1% of the users
+        self.rating_matrix = self.rating_matrix.dropna(axis='columns', thresh=self.original_unique_users_cnt * 0.1)
+        # users who rated more than 1% of the items
+        self.rating_matrix = self.rating_matrix.dropna(axis='index', thresh=self.original_unique_items_cnt * 0.01)
 
     def merge_and_transpose_ratings(self, rating_df: pd.DataFrame) -> pd.DataFrame:
         self.original_unique_users.sort()

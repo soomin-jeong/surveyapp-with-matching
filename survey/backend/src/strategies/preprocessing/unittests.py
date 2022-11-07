@@ -77,7 +77,8 @@ class VectorizerTest(unittest.TestCase):
                                                                                    [None, 5, 5]]))))
         TRANSPOSED_MATRIX = TRANSPOSED_MATRIX.rename(index={0: 219, 1: 298, 2: 459, 3: 477},
                                                      columns={0: 1084, 1: 1262, 2: 5618})
-
+        print(TRANSPOSED_MATRIX)
+        print(rating_matrix)
         assert TRANSPOSED_MATRIX.equals(rating_matrix)
 
 
@@ -98,11 +99,11 @@ class HierarchicalClusterTest(unittest.TestCase):
 
     def test_HC_clusters_into_two_given_users_more_than_5(self):
         root_cluster = self.hc3.root_cluster
-        assert len(root_cluster.child_clusters) == 2
+        assert len(root_cluster.child_clusters) == 3
 
     def test_root_cluster_contains_all_users(self):
         # using set instead of unique for sorting
-        user_ids = self.hc2.ratings_df['userId'].unique()
+        user_ids = self.hc2.rating_df['userId'].unique()
         user_ids.sort()
         assert self.hc2.root_cluster.user_ids == user_ids.tolist()
 
@@ -123,8 +124,7 @@ class HierarchicalClusterTest(unittest.TestCase):
                 self.fail("the leaf cluster does not have 1 user")
 
 
-# @unittest.skip("Too slow with 45 users")
-class HierarchicalClusterSample(unittest.TestCase):
+class HierarchicalClusterSampleDataTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.hc4 = HierarchicalCluster(SAMPLE_DATA)

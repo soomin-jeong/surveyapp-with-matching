@@ -21,15 +21,15 @@ class HierarchicalCluster:
         def __repr__(self):
             return repr(f'{self.user_cnt}: {self.user_ids}')
 
-    def __init__(self, ratings_df):
+    def __init__(self, rating_df):
 
-        self.ratings_df = ratings_df
-        matrix_builder = MatrixBuilder(self.ratings_df)
+        self.rating_df = rating_df
+        matrix_builder = MatrixBuilder(self.rating_df)
         rating_matrix = matrix_builder.rating_matrix
 
         # TODO: consider other options for the fillna
-        # filling the missing data with the average rating of the item
-        self.rating_matrix = rating_matrix.fillna(rating_matrix.mean())
+        # filling the missing data with the column-wise (item-wise) average rating of the item
+        self.rating_matrix = rating_matrix.fillna(rating_matrix.mean(), axis=0)
 
         self.root_cluster = self.UserCluster(is_root=True)
         self.root_cluster.user_ids = self.rating_matrix.index.to_list()
