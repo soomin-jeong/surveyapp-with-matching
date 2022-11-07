@@ -123,9 +123,15 @@ class HierarchicalClusterTest(unittest.TestCase):
                 self.fail("the leaf cluster does not have 1 user")
 
 
-    @unittest.skip("Too slow with 45 users")
-    def test_HC_clusters_sample_data_recursively(self):
-        self.hc4 = HierarchicalCluster(SAMPLE_DATA)
-        pass
+# @unittest.skip("Too slow with 45 users")
+class HierarchicalClusterSample(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.hc4 = HierarchicalCluster(SAMPLE_DATA)
+
+    def test_HC_clusters_sample_data_recursively_into_lte_7(self):
+        assert len(self.hc4.root_cluster.child_clusters) < 8
+
+
 
 

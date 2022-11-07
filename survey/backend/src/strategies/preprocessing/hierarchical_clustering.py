@@ -31,8 +31,6 @@ class HierarchicalCluster:
         # filling the missing data with the average rating of the item
         self.rating_matrix = rating_matrix.fillna(rating_matrix.mean())
 
-
-
         self.root_cluster = self.UserCluster(is_root=True)
         self.root_cluster.user_ids = self.rating_matrix.index.to_list()
         self.root_cluster.user_cnt = len(self.root_cluster.user_ids)
@@ -46,7 +44,6 @@ class HierarchicalCluster:
     def build_child_clusters(self, curr_cluster: UserCluster):
 
         # run k-means clusters based on elbow method
-
         curr_rating_matrix = self.rating_matrix.loc[curr_cluster.user_ids]
         unique_user_cnt = curr_rating_matrix.shape[0]
 
@@ -59,11 +56,10 @@ class HierarchicalCluster:
             best_k_means = kmeanModel
 
         else:
-
-            # choose the number of clusters between 2 to the (total number of unique users - 1) / 2
-            # limiting up to 5 clusters as too many clusters make it harder to choose an option among them
-            K = range(1, int(unique_user_cnt / 2))
-            # K = range(1, 1 + 5)
+            # find the desirable number of clusters
+            # limiting between 2 to smaller number between (total number of unique users - 1) / 2 or 7
+            # as too many clusters make it harder to choose an option among them
+            K = range(1, min(int(unique_user_cnt / 2) + 1, 8))
 
             kmeanModels = []
             inertias = []
