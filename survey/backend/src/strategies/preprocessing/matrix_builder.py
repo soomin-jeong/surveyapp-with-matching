@@ -22,6 +22,9 @@ class MatrixBuilder:
         self.drop_users_with_too_sparse_data()
 
     def drop_users_with_too_sparse_data(self):
+
+        # CAVEAT: if # users is less than 1% of # items, it will drop everything
+        # In this condition, the application is unlikely to return valid clustering anyways.
         # items rated by more than 1% of the users
         self.rating_matrix = self.rating_matrix.dropna(axis='columns', thresh=self.original_unique_users_cnt * 0.1)
         # users who rated more than 1% of the items

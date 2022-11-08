@@ -6,6 +6,8 @@ import numpy as np
 from survey.backend.src.strategies.preprocessing.hierarchical_clustering import HierarchicalCluster
 from survey.backend.src.strategies.preprocessing.matrix_builder import MatrixBuilder
 
+from survey.backend.src.strategies.preprocessing.hierarchical_clustering import MAXIMUM_CANDIDATES
+
 '''
 +-----+------+---+------------+
 | userId | movieId | rating | timestamp | 
@@ -130,7 +132,7 @@ class HierarchicalClusterSampleDataTest(unittest.TestCase):
         cls.hc4 = HierarchicalCluster(SAMPLE_DATA)
 
     def test_HC_clusters_sample_data_recursively_into_lte_7(self):
-        assert len(self.hc4.root_cluster.child_clusters) < 8
+        assert len(self.hc4.root_cluster.child_clusters) <= MAXIMUM_CANDIDATES
 
 
 

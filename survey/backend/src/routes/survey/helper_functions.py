@@ -165,6 +165,10 @@ def create_new_survey(name,
     ## find out the related dataset
     res_dataset = db.session.query(Dataset).filter_by(name=dataset_name).first()
 
+    ## TODO: if the preprocessing and hierachical clustering was already run, load the preprocessed class
+
+    ## TODO: else, run the preprocessing and hierarchical clustering and save the results
+
     ## random tokens
     #tokens = [generate_random_tokens(16) for n in range(0,num_participants)]
     ## print(str(tokens))

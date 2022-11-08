@@ -1,6 +1,10 @@
 from sklearn.cluster import KMeans
 from survey.backend.src.strategies.preprocessing.matrix_builder import MatrixBuilder
 
+# the number of candidates (options) at questions for the online users
+# for example, if this var is 5, users will see at most 5 options to choose among at each question.
+MAXIMUM_CANDIDATES = 7
+
 
 def depth(l):
     if isinstance(l, list):
@@ -59,7 +63,7 @@ class HierarchicalCluster:
             # find the desirable number of clusters
             # limiting between 2 to smaller number between (total number of unique users - 1) / 2 or 7
             # as too many clusters make it harder to choose an option among them
-            K = range(1, min(int(unique_user_cnt / 2) + 1, 8))
+            K = range(1, min(int(unique_user_cnt / 2) + 1, MAXIMUM_CANDIDATES + 1))
 
             kmeanModels = []
             inertias = []

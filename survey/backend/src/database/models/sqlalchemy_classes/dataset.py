@@ -14,8 +14,8 @@ class Dataset(db.Model):
             dataset = pd.read_csv(filepath_or_buffer= self.file_path, sep=',', dtype='str')
             return dataset
         except FileNotFoundError as e:
-            print("ERROR:\nDataset:file not found")
-            return e
+            raise FileNotFoundError("ERROR:\nDataset:file not found")
+
     def __str__(self):
         return json.dumps({
             'id': self.id,
