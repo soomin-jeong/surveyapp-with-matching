@@ -12,6 +12,7 @@ survey/venv/**
 
 # files generated while receiving the results
 survey/backend/data/results/online_eval/*.csv
+survey/backend/data/clustered_results/**
 
 # environmental variables to be kept safe
 **/.env

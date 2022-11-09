@@ -1,8 +1,14 @@
+import os
+import pandas as pd
+import pickle
+
 from sklearn.cluster import KMeans
 from survey.backend.src.strategies.preprocessing.matrix_builder import MatrixBuilder
 
 # the number of candidates (options) at questions for the online users
 # for example, if this var is 5, users will see at most 5 options to choose among at each question.
+from survey.backend.src.strategies.preprocessing.utils import clustered_result_path, raw_dataset_path
+
 MAXIMUM_CANDIDATES = 7
 
 
@@ -25,25 +31,47 @@ class HierarchicalCluster:
         def __repr__(self):
             return repr(f'{self.user_cnt}: {self.user_ids}')
 
-    def __init__(self, rating_df):
+    def __init__(self, dataset_name:str):
+        self.depth: int = 0
 
-        self.rating_df = rating_df
-        matrix_builder = MatrixBuilder(self.rating_df)
+        if os.path.exists(clustered_result_path(dataset_name)):
+
+            with open(clustered_result_path(dataset_name), 'rb') as cluster_file_r:
+                temp_hc = pickle.load(cluster_file_r)
+                self.root_cluster = temp_hc.root_cluster
+                self.rating_matrix = temp_hc.rating_matrix
+        else:
+            rating_df = pd.read_csv(raw_dataset_path(dataset_name))
+            self.rating_matrix = self.preprocess_and_fillna(rating_df)
+            self.root_cluster = self.cluster_users_by_rating()
+
+            # depth is the level of the hierarchy
+            # it is highly relevant with the number of questions to ask to users.
+            # If the cluster has N depths, users will be asked N questions to match the user with a cluster
+            self.depth = 1 + depth(self.root_cluster.child_clusters)
+
+            # save the class into the CLUSTERED_RESULT_PATH
+            dir = '/'.join(clustered_result_path(dataset_name).split('/')[:-1])
+            if not os.path.exists(dir):
+                os.makedirs(dir)
+
+            with open(clustered_result_path(dataset_name), 'wb') as cluster_file_w:
+                pickle.dump(self, cluster_file_w)
+
+    def preprocess_and_fillna(self, rating_df):
+        matrix_builder = MatrixBuilder(rating_df)
         rating_matrix = matrix_builder.rating_matrix
 
         # TODO: consider other options for the fillna
         # filling the missing data with the column-wise (item-wise) average rating of the item
-        self.rating_matrix = rating_matrix.fillna(rating_matrix.mean(), axis=0)
+        return rating_matrix.fillna(rating_matrix.mean(), axis=0)
 
-        self.root_cluster = self.UserCluster(is_root=True)
-        self.root_cluster.user_ids = self.rating_matrix.index.to_list()
-        self.root_cluster.user_cnt = len(self.root_cluster.user_ids)
-        self.build_child_clusters(self.root_cluster)
-
-        # depth is the level of the hierarchy
-        # it is highly relevant with the number of questions to ask to users.
-        # If the cluster has N depths, users will be asked N questions to match the user with a cluster
-        self.depth = 1 + depth(self.root_cluster.child_clusters)
+    def cluster_users_by_rating(self):
+        root_cluster = self.UserCluster(is_root=True)
+        root_cluster.user_ids = self.rating_matrix.index.to_list()
+        root_cluster.user_cnt = len(root_cluster.user_ids)
+        self.build_child_clusters(root_cluster)
+        return root_cluster
 
     def build_child_clusters(self, curr_cluster: UserCluster):
 

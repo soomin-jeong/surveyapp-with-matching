@@ -1,3 +1,4 @@
+import os.path
 from dataclasses import dataclass
 from sqlite3 import DatabaseError
 import json
@@ -5,7 +6,7 @@ import csv
 from flask_mail import Message
 from smtplib import SMTPException
 from sqlalchemy import exc
-
+from os.path import exists
 
 from ...app import db, mail
 from ...utils.utils import generate_random_tokens, list_directory_files, list_subdirectoreis
@@ -17,10 +18,7 @@ from ...database.models.sqlalchemy_classes.survey import Survey
 from ...database.models.sqlalchemy_classes.participant import Survey_Participant
 from ...utils.logger import api_logger
 
-
-
-
-
+from survey.backend.src.strategies.preprocessing.hierarchical_clustering import HierarchicalCluster
 
 
 
@@ -165,9 +163,9 @@ def create_new_survey(name,
     ## find out the related dataset
     res_dataset = db.session.query(Dataset).filter_by(name=dataset_name).first()
 
-    ## TODO: if the preprocessing and hierachical clustering was already run, load the preprocessed class
-
-    ## TODO: else, run the preprocessing and hierarchical clustering and save the results
+    ## by creating an instance of the HierchcicalClustering cluster, (== run __init__)
+    ## start preprocessing and hierarchical clustering if not done yet
+    hc = HierarchicalCluster(dataset_name)
 
     ## random tokens
     #tokens = [generate_random_tokens(16) for n in range(0,num_participants)]
