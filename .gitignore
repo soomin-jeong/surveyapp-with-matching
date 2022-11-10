@@ -3,12 +3,13 @@
 **/.idea/**
 **/*.ps1
 
-# files generated when running the servers (log)
+# files generated or modified when running the servers (log)
 survey/frontend/node_modules/*
 **/api_log.log
 survey/frontend/package-lock.json
 survey/output.txt
 survey/venv/**
+survey/backend/data/survey_database.db
 
 # files generated while receiving the results
 survey/backend/data/results/online_eval/*.csv
