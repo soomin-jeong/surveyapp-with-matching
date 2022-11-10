@@ -8,8 +8,7 @@ import pickle
 
 from backend.src.strategies.preprocessing.hierarchical_clustering import HierarchicalCluster
 from backend.src.strategies.preprocessing.matrix_builder import MatrixBuilder
-from backend.src.strategies.preprocessing.utils import clustered_result_path
-from backend.src.strategies.preprocessing.utils import raw_dataset_path
+from backend.src.strategies.preprocessing.utils import clustered_result_path, raw_dataset_path
 
 from backend.src.strategies.preprocessing.hierarchical_clustering import MAXIMUM_CANDIDATES
 

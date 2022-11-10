@@ -60,7 +60,7 @@ echo "Finished installing requirements"
 
 echo "------------------------------------------------------------"
 echo "Running backend on port 5000."
-gunicorn --bind 0.0.0.0:5000 backend.src.app:app
+gunicorn --bind 0.0.0.0:5000 backend.src.app:app --daemon
 sleep 5
 echo "checking if the server is up"
 HTTP_CODE=$(curl --write-out "%{http_code}\n" "$BACKEND_URL" --output output.txt --silent)
