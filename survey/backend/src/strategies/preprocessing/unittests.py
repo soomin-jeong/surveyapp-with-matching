@@ -6,12 +6,11 @@ import numpy as np
 
 import pickle
 
-from survey.backend.src.strategies.preprocessing.hierarchical_clustering import HierarchicalCluster
-from survey.backend.src.strategies.preprocessing.matrix_builder import MatrixBuilder
-from survey.backend.src.strategies.preprocessing.utils import clustered_result_path
-from survey.backend.src.strategies.preprocessing.utils import raw_dataset_path
+from backend.src.strategies.preprocessing.hierarchical_clustering import HierarchicalCluster
+from backend.src.strategies.preprocessing.matrix_builder import MatrixBuilder
+from backend.src.strategies.preprocessing.utils import clustered_result_path, raw_dataset_path
 
-from survey.backend.src.strategies.preprocessing.hierarchical_clustering import MAXIMUM_CANDIDATES
+from backend.src.strategies.preprocessing.hierarchical_clustering import MAXIMUM_CANDIDATES
 
 '''
 +-----+------+---+------------+
@@ -48,17 +47,17 @@ SAMPLE_DATASET_PATH = 'movielens_small'
 SAMPLE_DATA = pd.read_csv(raw_dataset_path(SAMPLE_DATASET_PATH))
 
 
-class VectorizerTest(unittest.TestCase):
-    vectorizer = None
+class MatrixBuilderTest(unittest.TestCase):
+    matrix_builder = None
 
     @classmethod
     def setUpClass(cls) -> None:
-        cls.vectorizer = MatrixBuilder(DUMMY_RATINGS2)
-        cls.compressed_df = cls.vectorizer.rating_df
+        cls.matrix_builder = MatrixBuilder(DUMMY_RATINGS2)
+        cls.compressed_df = cls.matrix_builder.rating_df
 
     # tests if the data frame from the `ratings.csv` is successfully transposed so that the columns are the items
     def test_transpose_to_rating_matrix(self):
-        rating_matrix = self.vectorizer.rating_matrix
+        rating_matrix = self.matrix_builder.rating_matrix
 
         # user_id, item 5618, item 1262, item 1084, timestamp
         TRANSPOSED_MATRIX = pd.DataFrame(data=np.array(pd.DataFrame(data=np.array([[5, None, 1],
@@ -67,6 +66,7 @@ class VectorizerTest(unittest.TestCase):
                                                                                    [None, 5, 5]]))))
         TRANSPOSED_MATRIX = TRANSPOSED_MATRIX.rename(index={0: 219, 1: 298, 2: 459, 3: 477},
                                                      columns={0: 1084, 1: 1262, 2: 5618})
+        print(rating_matrix)
         assert TRANSPOSED_MATRIX.equals(rating_matrix)
 
 

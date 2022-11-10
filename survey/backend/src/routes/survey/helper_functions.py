@@ -18,7 +18,7 @@ from ...database.models.sqlalchemy_classes.survey import Survey
 from ...database.models.sqlalchemy_classes.participant import Survey_Participant
 from ...utils.logger import api_logger
 
-from survey.backend.src.strategies.preprocessing.hierarchical_clustering import HierarchicalCluster
+from backend.src.strategies.preprocessing.hierarchical_clustering import HierarchicalCluster
 
 
 
@@ -55,12 +55,13 @@ def collect_frontend_dashboard_data():
 
     all_datasets_in_db = db.session.query(Dataset).all()
     dataset_dirs = list_subdirectoreis(('backend/data/datasets'))
-    #dataset_dirs = list_subdirectoreis(os.path.abspath('../data/datasets'))
+
     if dataset_dirs:
         for d in dataset_dirs:
             create_new_dataset(d, f'{("backend/data/datasets")}/{d}/ratings.csv')
+
     if all_datasets_in_db:
-        for  d1 in all_datasets_in_db:
+        for d1 in all_datasets_in_db:
             if d1.name not in dataset_dirs:
                 try:
                     db.session.delete(d1)
@@ -74,25 +75,16 @@ def collect_frontend_dashboard_data():
 
     ## get name of all reclist files from the directory
     #all_reclists = list_directory_files(os.path.abspath('../data/recommendation_lists'))
-    all_reclists = list_directory_files(('backend/data/recommendation_lists'))
-    for l in all_reclists:
-        all_data['reclists'].append(l)
-    
-    all_mailing_lists = list_directory_files(('backend/data/mailing_lists'))
-    for l in all_mailing_lists:
-        all_data['mailing_lists'].append(l)
+    all_data['reclists'] = list_directory_files(('backend/data/recommendation_lists'))
+    all_data['mailing_lists'] = list_directory_files(('backend/data/mailing_lists'))
+
     ## ifo about all datasets
     if all_datasets:
-        for d in all_datasets:
-            all_data['datasets'].append(str(d))
-    #all_matchmaking_strategies = list_directory_files('strategies/matchmaking')
-    #all_item_selection_strategies = list_directory_files('strategies/item_selection')
-    all_matchmaking_strategies = list_directory_files('backend/src/strategies/matchmaking')
-    all_item_selection_strategies = list_directory_files('backend/src/strategies/next_question_selection')
-    for s in all_matchmaking_strategies:
-        all_data['strategies']['matchmaking'].append(s)
-    for s in all_item_selection_strategies:
-        all_data['strategies']['item_selection'].append(s)
+        all_data['datasets'] = all_datasets
+
+    all_data['strategies']['matchmaking'] = list_directory_files('backend/src/strategies/matchmaking/implemented_strategies')
+    all_data['strategies']['item_selection'] = list_directory_files('backend/src/strategies/next_question_selection/implemented_strategies')
+
     return json.dumps(all_data)
 
 

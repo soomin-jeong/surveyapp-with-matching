@@ -2,7 +2,7 @@ import json
 import pandas as pd
 import numpy as np
 import random
-from survey.backend.src.strategies.next_question_selection.abstract_class.item_selection_base import BaseStrategy
+from backend.src.strategies.next_question_selection.abstract_class.item_selection_base import BaseStrategy
 import ast
 
 

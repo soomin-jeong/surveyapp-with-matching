@@ -3,11 +3,11 @@ import pandas as pd
 import pickle
 
 from sklearn.cluster import KMeans
-from survey.backend.src.strategies.preprocessing.matrix_builder import MatrixBuilder
+from backend.src.strategies.preprocessing.matrix_builder import MatrixBuilder
 
 # the number of candidates (options) at questions for the online users
 # for example, if this var is 5, users will see at most 5 options to choose among at each question.
-from survey.backend.src.strategies.preprocessing.utils import clustered_result_path, raw_dataset_path
+from backend.src.strategies.preprocessing.utils import clustered_result_path, raw_dataset_path
 
 MAXIMUM_CANDIDATES = 7
 
@@ -88,6 +88,7 @@ class HierarchicalCluster:
             best_k_means = kmeanModel
 
         else:
+            # TODO: consider if the number should be any smaller (i.e. 5)
             # find the desirable number of clusters
             # limiting between 2 to smaller number between (total number of unique users - 1) / 2 or 7
             # as too many clusters make it harder to choose an option among them
