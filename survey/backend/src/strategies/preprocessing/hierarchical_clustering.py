@@ -88,6 +88,7 @@ class HierarchicalCluster:
             best_k_means = kmeanModel
 
         else:
+            # TODO: consider if the number should be any smaller (i.e. 5)
             # find the desirable number of clusters
             # limiting between 2 to smaller number between (total number of unique users - 1) / 2 or 7
             # as too many clusters make it harder to choose an option among them

@@ -18,19 +18,19 @@ class MatrixBuilder:
         self.original_unique_users_cnt = len(self.original_unique_users)
         self.original_unique_items_cnt = len(self.original_unique_items)
 
-        self.rating_matrix = self.merge_and_transpose_ratings(self.rating_df)
-        self.drop_users_with_too_sparse_data()
+        self.rating_matrix = self.densify_the_ratings_df(self.rating_df)
+        self.drop_users_or_items_with_few_ratings()
 
-    def drop_users_with_too_sparse_data(self):
+    def drop_users_or_items_with_few_ratings(self):
 
-        # CAVEAT: if # users is less than 1% of # items, it will drop everything
+        # TODO: CAVEAT: if # users is less than 1% of # items, it will drop everything
         # In this condition, the application is unlikely to return valid clustering anyways.
         # items rated by more than 1% of the users
         self.rating_matrix = self.rating_matrix.dropna(axis='columns', thresh=self.original_unique_users_cnt * 0.1)
         # users who rated more than 1% of the items
         self.rating_matrix = self.rating_matrix.dropna(axis='index', thresh=self.original_unique_items_cnt * 0.01)
 
-    def merge_and_transpose_ratings(self, rating_df: pd.DataFrame) -> pd.DataFrame:
+    def densify_the_ratings_df(self, rating_df: pd.DataFrame) -> pd.DataFrame:
         self.original_unique_users.sort()
         self.original_unique_items.sort()
 
