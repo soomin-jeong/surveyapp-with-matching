@@ -31,7 +31,7 @@ class HierarchicalCluster:
         def __repr__(self):
             return repr(f'{self.user_cnt}: {self.user_ids}')
 
-    def __init__(self, dataset_name:str):
+    def __init__(self, dataset_name: str):
         self.depth: int = 0
 
         if os.path.exists(clustered_result_path(dataset_name)):
