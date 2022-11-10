@@ -56,7 +56,7 @@ class MatrixBuilderTest(unittest.TestCase):
         cls.compressed_df = cls.matrix_builder.rating_df
 
     # tests if the data frame from the `ratings.csv` is successfully transposed so that the columns are the items
-    def test_transpose_to_rating_matrix(self):
+    def test_densify_into_rating_matrix(self):
         rating_matrix = self.matrix_builder.rating_matrix
 
         # user_id, item 5618, item 1262, item 1084, timestamp
@@ -66,7 +66,6 @@ class MatrixBuilderTest(unittest.TestCase):
                                                                                    [None, 5, 5]]))))
         TRANSPOSED_MATRIX = TRANSPOSED_MATRIX.rename(index={0: 219, 1: 298, 2: 459, 3: 477},
                                                      columns={0: 1084, 1: 1262, 2: 5618})
-        print(rating_matrix)
         assert TRANSPOSED_MATRIX.equals(rating_matrix)
 
 
@@ -94,7 +93,7 @@ class HierarchicalClusterTest(unittest.TestCase):
 
     def test_root_cluster_contains_all_users(self):
         # using set instead of unique for sorting
-        user_ids = self.hc1.rating_df['userId'].unique()
+        user_ids = DUMMY_RATINGS2['userId'].unique()
         user_ids.sort()
         assert self.hc1.root_cluster.user_ids == user_ids.tolist()
 
@@ -129,6 +128,7 @@ class HierarchicalClusterSampleDataTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.hc4 = HierarchicalCluster(SAMPLE_DATASET_PATH)
+        cls.addClassCleanup(os.remove, clustered_result_path(SAMPLE_DATASET_PATH))
 
     def test_HC_clusters_sample_data_recursively_into_lte_7(self):
         assert len(self.hc4.root_cluster.child_clusters) <= MAXIMUM_CANDIDATES
