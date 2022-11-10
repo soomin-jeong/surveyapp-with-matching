@@ -5,9 +5,6 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import exc
 from flask_mail import Mail
 
-#from survey.backend.src.database.models.survey import Survey
-#from .utils.utils import generate_random_tokens
-
 from .flask_configs import Flask_Configs
 
 

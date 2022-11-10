@@ -3,11 +3,11 @@ import pandas as pd
 import pickle
 
 from sklearn.cluster import KMeans
-from survey.backend.src.strategies.preprocessing.matrix_builder import MatrixBuilder
+from backend.src.strategies.preprocessing.matrix_builder import MatrixBuilder
 
 # the number of candidates (options) at questions for the online users
 # for example, if this var is 5, users will see at most 5 options to choose among at each question.
-from survey.backend.src.strategies.preprocessing.utils import clustered_result_path, raw_dataset_path
+from backend.src.strategies.preprocessing.utils import clustered_result_path, raw_dataset_path
 
 MAXIMUM_CANDIDATES = 7
 

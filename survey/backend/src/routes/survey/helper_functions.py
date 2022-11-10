@@ -18,7 +18,7 @@ from ...database.models.sqlalchemy_classes.survey import Survey
 from ...database.models.sqlalchemy_classes.participant import Survey_Participant
 from ...utils.logger import api_logger
 
-from survey.backend.src.strategies.preprocessing.hierarchical_clustering import HierarchicalCluster
+from backend.src.strategies.preprocessing.hierarchical_clustering import HierarchicalCluster
 
 
 
@@ -85,14 +85,13 @@ def collect_frontend_dashboard_data():
     if all_datasets:
         for d in all_datasets:
             all_data['datasets'].append(str(d))
-    #all_matchmaking_strategies = list_directory_files('strategies/matchmaking')
-    #all_item_selection_strategies = list_directory_files('strategies/item_selection')
-    all_matchmaking_strategies = list_directory_files('backend/src/strategies/matchmaking')
-    all_item_selection_strategies = list_directory_files('backend/src/strategies/next_question_selection')
-    for s in all_matchmaking_strategies:
-        all_data['strategies']['matchmaking'].append(s)
-    for s in all_item_selection_strategies:
-        all_data['strategies']['item_selection'].append(s)
+
+    all_matchmaking_strategies = list_directory_files('backend/src/strategies/matchmaking/implemented_strategies')
+    all_item_selection_strategies = list_directory_files('backend/src/strategies/next_question_selection/implemented_strategies')
+
+    all_data['strategies']['matchmaking'] = all_matchmaking_strategies
+    all_data['strategies']['item_selection'] = all_item_selection_strategies
+
     return json.dumps(all_data)
 
 

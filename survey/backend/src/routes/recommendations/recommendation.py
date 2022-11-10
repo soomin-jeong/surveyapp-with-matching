@@ -5,12 +5,12 @@ import importlib
 import pandas as pd
 
 
-from survey.backend.src.app import db
-from survey.backend.src.database.models.sqlalchemy_classes.questionnaire import Questionnaire
-from survey.backend.src.database.models.sqlalchemy_classes.survey import Survey
-from survey.backend.src.database.models.sqlalchemy_classes.participant import Survey_Participant
-from survey.backend.src.database.models.sqlalchemy_classes.response import Response
-from survey.backend.src.database.models.sqlalchemy_classes.dataset import Dataset
+from backend.src.app import db
+from backend.src.database.models.sqlalchemy_classes.questionnaire import Questionnaire
+from backend.src.database.models.sqlalchemy_classes.survey import Survey
+from backend.src.database.models.sqlalchemy_classes.participant import Survey_Participant
+from backend.src.database.models.sqlalchemy_classes.response import Response
+from backend.src.database.models.sqlalchemy_classes.dataset import Dataset
 from .helper_functions import send_recommendations, save_recom_ratings
 ## createa a blueprint for this route to be easily added to root later.
 recommendation_bp = Blueprint('recommendation', __name__)

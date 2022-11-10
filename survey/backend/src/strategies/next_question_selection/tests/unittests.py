@@ -4,7 +4,7 @@ import numpy as np
 
 from collections import Counter
 from random import choice
-from survey.backend.src.strategies.next_question_selection.implemented_strategies.rated_by_the_most_strategy import Strategy
+from backend.src.strategies.next_question_selection.implemented_strategies.rated_by_the_most_strategy import Strategy
 
 
 DUMMY_RATINGS = pd.DataFrame(data=np.array([['459', '5618', '5.0', '1520233615'],

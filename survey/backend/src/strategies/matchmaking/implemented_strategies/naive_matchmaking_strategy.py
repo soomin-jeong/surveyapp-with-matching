@@ -1,6 +1,6 @@
 
 import pandas as pd
-from survey.backend.src.strategies.matchmaking.abstract_class.machmaking_strategy_base import MatchmakingBase
+from backend.src.strategies.matchmaking.abstract_class.machmaking_strategy_base import MatchmakingBase
 
 
 class Strategy(MatchmakingBase):
