@@ -8,6 +8,7 @@ from .helper_functions import save_ratings, send_next_item_and_current_ratings, 
 ## create a blueprint for this route to be easily added to root later.
 questionnaire_bp = Blueprint('questionnaire', __name__)
 
+
 @questionnaire_bp.route('/questionnaire', methods = ['POST', 'GET'])
 @cross_origin(supports_credentials=True)
 def handle_questionnaire():

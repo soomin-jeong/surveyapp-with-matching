@@ -87,9 +87,9 @@ class HierarchicalClusterTest(unittest.TestCase):
     def test_HC_clusters_into_right_depth(self):
         assert self.hc1.depth == 2
 
-    def test_HC_clusters_into_two_given_users_more_than_5(self):
+    def test_HC_clusters_into_five_given_users_more_than_5(self):
         root_cluster = self.hc2.root_cluster
-        assert len(root_cluster.child_clusters) == 3
+        assert len(root_cluster.child_clusters) == 5
 
     def test_root_cluster_contains_all_users(self):
         # using set instead of unique for sorting

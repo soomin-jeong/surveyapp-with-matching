@@ -19,15 +19,17 @@ class MatrixBuilder:
         self.original_unique_items_cnt = len(self.original_unique_items)
 
         self.rating_matrix = self.densify_the_ratings_df(self.rating_df)
-        self.drop_users_or_items_with_few_ratings()
+
+        # optional data processing: dropping users or items with too few ratings
+        # self.drop_users_or_items_with_few_ratings()
 
     def drop_users_or_items_with_few_ratings(self):
 
         # TODO: CAVEAT: if # users is less than 1% of # items, it will drop everything
         # In this condition, the application is unlikely to return valid clustering anyways.
-        # items rated by more than 1% of the users
+        # drop items rated by less than 1% of the users
         self.rating_matrix = self.rating_matrix.dropna(axis='columns', thresh=self.original_unique_users_cnt * 0.1)
-        # users who rated more than 1% of the items
+        # drop users who rated less than 1% of the items
         self.rating_matrix = self.rating_matrix.dropna(axis='index', thresh=self.original_unique_items_cnt * 0.01)
 
     def densify_the_ratings_df(self, rating_df: pd.DataFrame) -> pd.DataFrame:
