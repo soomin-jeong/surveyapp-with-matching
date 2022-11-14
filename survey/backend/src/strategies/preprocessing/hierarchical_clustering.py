@@ -133,7 +133,13 @@ class HierarchicalCluster:
                 best_k_means = kmeanModels[desirable_k - 1]
 
             else:
-                best_k_means = KMeans(n_clusters=MAXIMUM_CANDIDATES)
+                ## without PCA:
+                # best_k_means = KMeans(n_clusters=MAXIMUM_CANDIDATES)
+
+                ## with PCA:
+                pca = PCA(n_components=MAXIMUM_CANDIDATES).fit(curr_rating_matrix)
+                best_k_means = KMeans(init=pca.components_, n_clusters=MAXIMUM_CANDIDATES)
+
                 best_k_means.fit(curr_rating_matrix)
 
         curr_rating_matrix['labels'] = best_k_means.labels_
