@@ -9,7 +9,7 @@ import pandas as pd
 class BaseStrategy(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def __init__(self, rating_df: pd.DataFrame):
-        self.rating_df: pd.DataFrame = rating_df
+         self.rating_df: pd.DataFrame = rating_df
 
     @abc.abstractmethod
     def get_next_item(self, current_ratings: str) -> str:

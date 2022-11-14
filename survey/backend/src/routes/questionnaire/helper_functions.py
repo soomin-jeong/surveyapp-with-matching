@@ -91,7 +91,7 @@ def send_next_item_and_current_ratings(participant_token):
     rel_dataset = db.session.query(Dataset).filter_by(id=rel_survey.dataset_id).first()
     rel_strategy_name = rel_survey.item_selection_strategy
 
-    ## new item selection strategies are stored in the src/matchmaking folder
+    ## new item selection strategies are stored in the src/strategies/next_question_selection folder
     ## each file has a different name but contains a class called Strategy in it
 
     ## load the related strategy file (module) from the directory

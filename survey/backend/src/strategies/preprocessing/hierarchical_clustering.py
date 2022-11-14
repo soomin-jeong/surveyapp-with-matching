@@ -3,11 +3,14 @@ import pandas as pd
 import pickle
 
 from sklearn.cluster import KMeans
+from sklearn.decomposition import PCA
+
 from backend.src.strategies.preprocessing.matrix_builder import MatrixBuilder
 
 # the number of candidates (options) at questions for the online users
 # for example, if this var is 5, users will see at most 5 options to choose among at each question.
 from backend.src.strategies.preprocessing.utils import clustered_result_path, raw_dataset_path
+
 
 MAXIMUM_CANDIDATES = 5
 
@@ -42,7 +45,7 @@ class HierarchicalCluster:
                 self.rating_matrix = temp_hc.rating_matrix
         else:
             rating_df = pd.read_csv(raw_dataset_path(dataset_name))
-            self.rating_matrix = self.preprocess_and_fillna(rating_df)
+            self.rating_matrix = self.preprocess_input_df(rating_df)
             self.root_cluster = self.cluster_users_by_rating()
 
             # depth is the level of the hierarchy
@@ -58,18 +61,13 @@ class HierarchicalCluster:
             with open(clustered_result_path(dataset_name), 'wb') as cluster_file_w:
                 pickle.dump(self, cluster_file_w)
 
-    def preprocess_and_fillna(self, rating_df):
+    def preprocess_input_df(self, rating_df):
         matrix_builder = MatrixBuilder(rating_df)
         rating_matrix = matrix_builder.rating_matrix
 
         # TODO: consider other options for the fillna
         # filling the missing data with the column-wise (item-wise) average rating of the item
         return rating_matrix.fillna(rating_matrix.mean(), axis=0)
-
-    def reduce_dimensions(self):
-        # reduce the dimensions of rating_matrix by running PCA
-
-        return
 
     def cluster_users_by_rating(self):
         root_cluster = self.UserCluster(is_root=True)

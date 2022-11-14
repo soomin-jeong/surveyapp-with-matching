@@ -9,13 +9,12 @@ from .helper_functions import save_ratings, send_next_item_and_current_ratings, 
 questionnaire_bp = Blueprint('questionnaire', __name__)
 
 
-@questionnaire_bp.route('/questionnaire', methods = ['POST', 'GET'])
+@questionnaire_bp.route('/questionnaire', methods=['POST', 'GET'])
 @cross_origin(supports_credentials=True)
 def handle_questionnaire():
 
     if request.method == "GET":
         token = request.args.get('token')
-        print(f"token = {token}")
         survey_info = send_survey_details(token)
         return json.dumps(survey_info)
     

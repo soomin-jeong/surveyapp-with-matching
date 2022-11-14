@@ -38,10 +38,10 @@ Expected to be clustered: (((459), (477)), ((298), (219)))
 DATASET_PATH = '../../../data/datasets/'
 
 TEST1_DATASET_NAME = 'test1'
-DUMMY_RATINGS2 = pd.read_csv(raw_dataset_path(TEST1_DATASET_NAME))
+TEST1_DF = pd.read_csv(raw_dataset_path(TEST1_DATASET_NAME))
 
 TEST2_DATASET_NAME = 'test2'
-DUMMY_RATINGS3 = pd.read_csv(raw_dataset_path(TEST2_DATASET_NAME))
+TEST2_DF = pd.read_csv(raw_dataset_path(TEST2_DATASET_NAME))
 
 SAMPLE_DATASET_PATH = 'movielens_small'
 SAMPLE_DATA = pd.read_csv(raw_dataset_path(SAMPLE_DATASET_PATH))
@@ -52,7 +52,7 @@ class MatrixBuilderTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        cls.matrix_builder = MatrixBuilder(DUMMY_RATINGS2)
+        cls.matrix_builder = MatrixBuilder(TEST1_DF)
         cls.compressed_df = cls.matrix_builder.rating_df
 
     # tests if the data frame from the `ratings.csv` is successfully transposed so that the columns are the items
@@ -80,6 +80,11 @@ class HierarchicalClusterTest(unittest.TestCase):
         cls.addClassCleanup(os.remove, clustered_result_path(TEST1_DATASET_NAME))
         cls.hc2 = HierarchicalCluster(TEST2_DATASET_NAME)
 
+    def test_if_user_ids_were_set_as_index(self):
+        raw_user_ids = TEST1_DF['userId'].unique()
+        raw_user_ids.sort()
+        assert self.hc1.rating_matrix.index.tolist() == list(raw_user_ids)
+
     def test_HC_clusters_into_two_given_users_less_than_5(self):
         root_cluster = self.hc1.root_cluster
         assert len(root_cluster.child_clusters) == 2
@@ -93,7 +98,7 @@ class HierarchicalClusterTest(unittest.TestCase):
 
     def test_root_cluster_contains_all_users(self):
         # using set instead of unique for sorting
-        user_ids = DUMMY_RATINGS2['userId'].unique()
+        user_ids = TEST1_DF['userId'].unique()
         user_ids.sort()
         assert self.hc1.root_cluster.user_ids == user_ids.tolist()
 
