@@ -45,8 +45,8 @@ class HierarchicalCluster:
                 self.rating_matrix = temp_hc.rating_matrix
         else:
             rating_df = pd.read_csv(raw_dataset_path(dataset_name))
-            self.rating_matrix = self.preprocess_input_df(rating_df)
-            self.root_cluster = self.cluster_users_by_rating()
+            self.rating_matrix = self._preprocess_input_df(rating_df)
+            self.root_cluster = self._cluster_users_by_rating()
 
             # depth is the level of the hierarchy
             # it is highly relevant with the number of questions to ask to users.
@@ -61,7 +61,7 @@ class HierarchicalCluster:
             with open(clustered_result_path(dataset_name), 'wb') as cluster_file_w:
                 pickle.dump(self, cluster_file_w)
 
-    def preprocess_input_df(self, rating_df):
+    def _preprocess_input_df(self, rating_df):
         matrix_builder = MatrixBuilder(rating_df)
         rating_matrix = matrix_builder.rating_matrix
 
@@ -69,7 +69,7 @@ class HierarchicalCluster:
         # filling the missing data with the column-wise (item-wise) average rating of the item
         return rating_matrix.fillna(rating_matrix.mean(), axis=0)
 
-    def cluster_users_by_rating(self):
+    def _cluster_users_by_rating(self):
         root_cluster = self.UserCluster(is_root=True)
         root_cluster.user_ids = self.rating_matrix.index.to_list()
         root_cluster.user_cnt = len(root_cluster.user_ids)
@@ -77,10 +77,10 @@ class HierarchicalCluster:
         # if you'd like to use elbow method, not using the default value 5 for the clustering,
         # set the `elbow_method` argument as True
         # i.e. self.build_child_clusters(root_cluster, True)
-        self.build_child_clusters(root_cluster)
+        self._build_child_clusters(root_cluster)
         return root_cluster
 
-    def build_child_clusters(self, curr_cluster: UserCluster, elbow_method: bool = False):
+    def _build_child_clusters(self, curr_cluster: UserCluster, elbow_method: bool = False):
 
         # run k-means clusters based on elbow method
         curr_rating_matrix = self.rating_matrix.loc[curr_cluster.user_ids]
@@ -156,4 +156,4 @@ class HierarchicalCluster:
 
         for each_child in curr_cluster.child_clusters:
             if len(each_child.user_ids) > 1:
-                self.build_child_clusters(curr_cluster=each_child)
+                self._build_child_clusters(curr_cluster=each_child)
