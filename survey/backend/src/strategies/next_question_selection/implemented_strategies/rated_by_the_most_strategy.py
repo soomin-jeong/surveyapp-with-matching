@@ -2,13 +2,16 @@ import json
 import pandas as pd
 import numpy as np
 import random
-from backend.src.strategies.next_question_selection.abstract_class.item_selection_base import BaseStrategy
 import ast
 
+from backend.src.strategies.next_question_selection.abstract_class.item_selection_base import BaseStrategy
+from backend.src.strategies.preprocessing.hierarchical_clustering import HierarchicalCluster
+from backend.src.strategies.preprocessing.utils import raw_dataset_path
 
 class Strategy(BaseStrategy):
-    def __init__(self, rating_df: pd.DataFrame):
-        self.rating_df = rating_df
+    def __init__(self, dataset_name: str):
+        self.dataset_name = dataset_name
+        self.clustering = HierarchicalCluster(dataset_name)
 
     def get_next_item(self, current_ratings: str) -> str:
         
@@ -22,7 +25,7 @@ class Strategy(BaseStrategy):
 
         # value_counts() returns how many times each movie appeared in the ratings in a descending orders
         # index: movie_id, value: count
-        most_popular_movies = self.rating_df.loc[:,'movieId'].value_counts().index.tolist()[:10]
+        most_popular_movies = pd.read_csv(raw_dataset_path(self.dataset_name)).loc[:,'movieId'].value_counts().index.tolist()[:10]
         next_item = random.choice(most_popular_movies)
 
         # most_popular_movies_minus_already_rated = most_popular_movies.filter(already_rated_items0)

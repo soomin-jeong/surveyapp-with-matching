@@ -83,10 +83,13 @@ class HierarchicalCluster:
         # run k-means clusters based on elbow method
         curr_rating_matrix = self.rating_matrix.loc[curr_cluster.user_ids]
         unique_user_cnt = curr_rating_matrix.shape[0]
+        unique_item_cnt = curr_rating_matrix.shape[0]
 
         # assign the current cluster(self) as the parent cluster to the child clusters
-        # handling exceptional cases where the users are too few
-        if unique_user_cnt <= 5:
+        # handling exceptional cases where the users or the items are too few,
+        # as PCA requires them to be more than the number of components
+
+        if unique_user_cnt < MAXIMUM_CANDIDATES or unique_item_cnt:
 
             kmeanModel = KMeans(n_clusters=2)
             kmeanModel.fit(curr_rating_matrix)

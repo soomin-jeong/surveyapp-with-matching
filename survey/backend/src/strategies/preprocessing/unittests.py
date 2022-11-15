@@ -10,7 +10,7 @@ from backend.src.strategies.preprocessing.hierarchical_clustering import Hierarc
 from backend.src.strategies.preprocessing.matrix_builder import MatrixBuilder
 from backend.src.strategies.preprocessing.utils import clustered_result_path, raw_dataset_path
 
-from backend.settings import MAXIMUM_CANDIDATES
+from backend.settings import MAXIMUM_CANDIDATES, USER_COL_NAME
 
 '''
 +-----+------+---+------------+
@@ -35,7 +35,7 @@ from backend.settings import MAXIMUM_CANDIDATES
 Expected to be clustered: (((459), (477)), ((298), (219)))
 '''
 
-DATASET_PATH = '../../../data/datasets/'
+DATASET_PATH = 'backend/src/strategies/preprocessing/data/datasets/'
 
 TEST1_DATASET_NAME = 'test1'
 TEST1_DF = pd.read_csv(raw_dataset_path(TEST1_DATASET_NAME))
@@ -81,7 +81,7 @@ class HierarchicalClusterTest(unittest.TestCase):
         cls.hc2 = HierarchicalCluster(TEST2_DATASET_NAME)
 
     def test_if_user_ids_were_set_as_index(self):
-        raw_user_ids = TEST1_DF['userId'].unique()
+        raw_user_ids = TEST1_DF[USER_COL_NAME].unique()
         raw_user_ids.sort()
         assert self.hc1.rating_matrix.index.tolist() == list(raw_user_ids)
 
@@ -98,7 +98,7 @@ class HierarchicalClusterTest(unittest.TestCase):
 
     def test_root_cluster_contains_all_users(self):
         # using set instead of unique for sorting
-        user_ids = TEST1_DF['userId'].unique()
+        user_ids = TEST1_DF[USER_COL_NAME].unique()
         user_ids.sort()
         assert self.hc1.root_cluster.user_ids == user_ids.tolist()
 

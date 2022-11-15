@@ -1,7 +1,8 @@
 import os
 
-CLUSTERED_RESULT_PATH = '../../../data/clustered_results'
-RAW_DATASET_PATH = '../../../data/datasets'
+CURRENT_PATH = os.path.dirname(os.path.abspath(__file__))
+CLUSTERED_RESULT_PATH = f'{CURRENT_PATH}/../../../data/clustered_results'
+RAW_DATASET_PATH = f'{CURRENT_PATH}/../../../data/datasets'
 RATINGS_FILE_NAME = 'ratings.csv'
 RESULT_FILE_NAME = 'HierarchicalClustering.pkl'
 
