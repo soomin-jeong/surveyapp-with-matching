@@ -5,14 +5,12 @@ import pickle
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 
+from backend.settings import MAXIMUM_CANDIDATES
 from backend.src.strategies.preprocessing.matrix_builder import MatrixBuilder
 
 # the number of candidates (options) at questions for the online users
 # for example, if this var is 5, users will see at most 5 options to choose among at each question.
 from backend.src.strategies.preprocessing.utils import clustered_result_path, raw_dataset_path
-
-
-MAXIMUM_CANDIDATES = 5
 
 
 def depth(l):

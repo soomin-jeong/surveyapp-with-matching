@@ -1,12 +1,6 @@
 import pandas as pd
-import numpy as np
 
-
-# TODO: move these arbitrary names into the settings file
-#  so that users can specify the names when entering the input data file
-USER_COL_NAME = 'userId'
-ITEM_COL_NAME = 'movieId'
-RATING_COL_NAME = 'rating'
+from backend.settings import USER_COL_NAME, ITEM_COL_NAME, RATING_COL_NAME
 
 
 class MatrixBuilder:
