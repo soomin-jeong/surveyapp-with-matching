@@ -12,7 +12,7 @@ class BaseStrategy(metaclass=abc.ABCMeta):
         raise NotImplementedError("{} should be implemented".format(self.__class__.__name__))
 
     @abc.abstractmethod
-    def get_next_item(self, current_ratings: str) -> str:
+    def get_next_items(self, current_ratings: str) -> [int]:
         """
         Args:
             current_ratings: ratings in dict style string (key: movieId, value: rating)

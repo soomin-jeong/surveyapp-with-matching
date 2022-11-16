@@ -9,7 +9,7 @@ class Strategy(BaseStrategy):
     def __init__(self, rating_df: pd.DataFrame):
         self.rating_df = rating_df
 
-    def get_next_item(self, current_ratings):
+    def get_next_items(self, current_ratings):
         current_ratings_dict = ast.literal_eval(current_ratings)
         last_item=42
         if list(current_ratings_dict.keys()):

@@ -62,33 +62,51 @@ def test_naive_item_selection_strategy():
     hc1 = HierarchicalCluster('test1')
     naive_item_selection_st = s_naive(hc1)
     current_ratings = "{'5618': '5.0'}"
-    next_item = naive_item_selection_st.get_next_item(current_ratings)
+    next_item = naive_item_selection_st.get_next_items(current_ratings)
     assert next_item in [1262, 1084]
 
 
 def test_naive_item_selection_strategy_with_only_one_item_left_to_rate():
     naive_item_selection_st = s_naive('test1')
     current_ratings = "{'5618': '5.0', ' 1262': '1.0'}"
-    next_item = naive_item_selection_st.get_next_item(current_ratings)
+    next_item = naive_item_selection_st.get_next_items(current_ratings)
     assert next_item == 1084
 
 
+'''
+hierachical clustering of 'test2' dataset:
+[219, 297, 298, 412, 459, 477]
+[412, 459, 477, 219]    [297, 298]
+[412, 459, 219] [477]   [297] [298]
+[412, 459] [219] [477]  [297] [298]
+[412] [459] [219] [477] [297] [298]
+
+459: 5618, 1262
+477: 5618, 1262
+412: 5618, 1084
+298: 5618, 1984
+297: 5618, 1262
+219: 5618, 1984
+
+1st question: 1262, 1984 (choose 1262)
+2nd question: 1262, 1084 (choose 1084)
+match with 412
+'''
 def test_rated_by_most_st_has_the_most_ratings():
     rated_by_most_st = s_rated_most('test2')
 
-    # select a random movie and add it as a movie which is already rated by an online user
-    random_movie = choice(rated_by_most_st.clustering.rating_matrix.columns)
+    # the strategy should return 1262 and 1984 as the items to choose from two clusters: [412, 459, 477] [219, 297, 298]
+    assert rated_by_most_st.get_next_items("[]") == [1262, 1984]
 
-    # dummy input for get_next_item
-    current_ratings_dict = {int(random_movie): 5.0}
-    random_from_most_rated_movie_ids = rated_by_most_st.get_next_item(json.dumps(current_ratings_dict))
+    # assume user chose 1262, matched with [412, 459, 477] cluster
+    # the strategy should return 1262 and 1984 as the items to choose from two clusters: [412, 459] [477]
+    assert rated_by_most_st.get_next_items("[1262]") == [1262, 1084]
 
-    # select the movie rated by the most
-    original_input_data = pd.read_csv(raw_dataset_path(dataset_name='test2'))
-    most_common_movies = Counter(original_input_data[ITEM_COL_NAME].to_list()).most_common(10)
+    # assume user chose 1084, matched with [412] cluster
+    # now that the user was matched with a cluster with only one user (id: 412), the `get_next_items` return an empty list
+    assert rated_by_most_st.get_next_items("[1262, 1084]") == []
 
-    # column at index 0: movie IDs
-    most_common_movie_ids = [each[0] for each in most_common_movies]
 
-    assert random_from_most_rated_movie_ids in most_common_movie_ids
 
+def test_skipping_to_next_question_if_prev_answer_already_matches_with_cluster():
+    pass

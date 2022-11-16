@@ -13,7 +13,7 @@ class Strategy(BaseStrategy):
         self.dataset_name = dataset_name
         self.clustering = HierarchicalCluster(dataset_name)
 
-    def get_next_item(self, current_ratings: str) -> int:
+    def get_next_items(self, current_ratings: str) -> int:
         current_ratings_dict = ast.literal_eval(current_ratings)
 
         if current_ratings:
@@ -22,7 +22,7 @@ class Strategy(BaseStrategy):
             rated_item_ids = []
 
         ## select a random item except the items already rated
-        items_available_to_rate = [each_item for each_item in self.cluster.rating_matrix.columns
+        items_available_to_rate = [each_item for each_item in self.cluster.rating_matrix_na_filled.columns
                                    if each_item not in rated_item_ids]
 
         next_item = random.choice(items_available_to_rate)

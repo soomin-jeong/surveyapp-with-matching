@@ -35,15 +35,17 @@ class HierarchicalCluster:
     def __init__(self, dataset_name: str):
         self.depth: int = 0
 
+        # if the clustered results are saved, load the saved file, else, run the clustering and save it
         if os.path.exists(clustered_result_path(dataset_name)):
-
-            with open(clustered_result_path(dataset_name), 'rb') as cluster_file_r:
-                temp_hc = pickle.load(cluster_file_r)
-                self.root_cluster = temp_hc.root_cluster
-                self.rating_matrix = temp_hc.rating_matrix
+            self._load_clustered_results(dataset_name)
         else:
             rating_df = pd.read_csv(raw_dataset_path(dataset_name))
             self.rating_matrix = self._preprocess_input_df(rating_df)
+
+            # TODO: consider other options for the fillna
+            # filling the missing data with the column-wise (item-wise) average rating of the item
+            self.rating_matrix_na_filled = self.rating_matrix.fillna(self.rating_matrix.mean(), axis=0)
+
             self.root_cluster = self._cluster_users_by_rating()
 
             # depth is the level of the hierarchy
@@ -51,25 +53,32 @@ class HierarchicalCluster:
             # If the cluster has N depths, users will be asked N questions to match the user with a cluster
             self.depth = 1 + depth(self.root_cluster.child_clusters)
 
-            # save the class into the CLUSTERED_RESULT_PATH
-            dir = '/'.join(clustered_result_path(dataset_name).split('/')[:-1])
-            if not os.path.exists(dir):
-                os.makedirs(dir)
+            self._save_clustered_results(dataset_name)
 
-            with open(clustered_result_path(dataset_name), 'wb') as cluster_file_w:
-                pickle.dump(self, cluster_file_w)
+    def _load_clustered_results(self, dataset_name):
+        with open(clustered_result_path(dataset_name), 'rb') as cluster_file_r:
+            temp_hc = pickle.load(cluster_file_r)
+            self.depth = temp_hc.depth
+            self.root_cluster = temp_hc.root_cluster
+            self.rating_matrix = temp_hc.rating_matrix
+            self.rating_matrix_na_filled = temp_hc.rating_matrix_na_filled
+
+    def _save_clustered_results(self, dataset_name):
+        # save the class into the CLUSTERED_RESULT_PATH
+        dir = '/'.join(clustered_result_path(dataset_name).split('/')[:-1])
+        if not os.path.exists(dir):
+            os.makedirs(dir)
+
+        with open(clustered_result_path(dataset_name), 'wb') as cluster_file_w:
+            pickle.dump(self, cluster_file_w)
 
     def _preprocess_input_df(self, rating_df):
         matrix_builder = MatrixBuilder(rating_df)
-        rating_matrix = matrix_builder.rating_matrix
-
-        # TODO: consider other options for the fillna
-        # filling the missing data with the column-wise (item-wise) average rating of the item
-        return rating_matrix.fillna(rating_matrix.mean(), axis=0)
+        return matrix_builder.rating_matrix
 
     def _cluster_users_by_rating(self):
         root_cluster = self.UserCluster(is_root=True)
-        root_cluster.user_ids = self.rating_matrix.index.to_list()
+        root_cluster.user_ids = self.rating_matrix_na_filled.index.to_list()
         root_cluster.user_cnt = len(root_cluster.user_ids)
 
         # if you'd like to use elbow method, not using the default value 5 for the clustering,
@@ -81,9 +90,9 @@ class HierarchicalCluster:
     def _build_child_clusters(self, curr_cluster: UserCluster, elbow_method: bool = False):
 
         # run k-means clusters based on elbow method
-        curr_rating_matrix = self.rating_matrix.loc[curr_cluster.user_ids]
+        curr_rating_matrix = self.rating_matrix_na_filled.loc[curr_cluster.user_ids]
         unique_user_cnt = curr_rating_matrix.shape[0]
-        unique_item_cnt = curr_rating_matrix.shape[0]
+        unique_item_cnt = curr_rating_matrix.shape[1]
 
         # assign the current cluster(self) as the parent cluster to the child clusters
         # handling exceptional cases where the users or the items are too few,

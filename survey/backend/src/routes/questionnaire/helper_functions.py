@@ -106,7 +106,7 @@ def send_next_item_and_current_ratings(participant_token):
 
     try:
         ## if the question number shows it's first question asked
-        next_item = create_item_descriptions(strategy_class_instance.get_next_item(all_curr_ratings))
+        next_item = create_item_descriptions(strategy_class_instance.get_next_items(all_curr_ratings))
         payload = {"current_ratings": json.loads(all_curr_ratings), "next_item": next_item}
         return payload
 
