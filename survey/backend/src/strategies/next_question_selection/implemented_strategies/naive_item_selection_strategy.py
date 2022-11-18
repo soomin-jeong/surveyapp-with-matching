@@ -14,10 +14,11 @@ class Strategy(BaseStrategy):
         choices_so_far = convert_current_ratings_str_into_list(choices_so_far_str)
 
         ## select a random item except the items already rated
-        items_available_to_rate = [each_item for each_item in self.cluster.rating_matrix_na_filled.columns
+        items_available_to_rate = [each_item for each_item in self.clustering.rating_matrix_na_filled.columns
                                    if each_item not in choices_so_far]
 
-        next_item = random.choices(population=items_available_to_rate, k=2)
-        return next_item
+        # pick 2 items (as it should return at least 2 items to choose from) by sampling without replacement
+        next_items = random.sample(population=items_available_to_rate, k=2)
+        return next_items
 
 

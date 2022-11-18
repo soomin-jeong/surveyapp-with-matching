@@ -85,4 +85,4 @@ def convert_current_ratings_str_into_list(current_ratings_str: str) -> [int]:
     if current_ratings_str == "[]" or current_ratings_str is None:
         return []
     else:
-        return current_ratings_str[1:-1].split(',')
+        return [int(each) for each in current_ratings_str[1:-1].split(',')]

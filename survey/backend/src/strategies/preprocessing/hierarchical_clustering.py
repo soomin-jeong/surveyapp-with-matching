@@ -94,8 +94,7 @@ class HierarchicalCluster:
 
         # run k-means clusters based on elbow method
         curr_rating_matrix = self.rating_matrix_na_filled.loc[curr_cluster.user_ids]
-        unique_user_cnt = curr_rating_matrix.shape[0]
-        unique_item_cnt = curr_rating_matrix.shape[1]
+        unique_user_cnt, unique_item_cnt = curr_rating_matrix.shape
 
         # assign the current cluster(self) as the parent cluster to the child clusters
         # handling exceptional cases where the users or the items are too few,

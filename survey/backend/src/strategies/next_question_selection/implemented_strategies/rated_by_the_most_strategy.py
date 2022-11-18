@@ -40,7 +40,7 @@ class Strategy(BaseStrategy):
         curr_cluster = self.clustering.root_cluster
 
         for each_choice in choices_so_far:
-            for each_child_cluster in curr_cluster.parent_cluster:
+            for each_child_cluster in curr_cluster.child_clusters:
                 if each_choice == each_child_cluster.rep_item:
                     curr_cluster = each_child_cluster
                     break
@@ -51,6 +51,7 @@ class Strategy(BaseStrategy):
 
         # find the cluster that the user is matched depending on the choices up to now
         curr_cluster = self.get_cluster_matched_up_to_now(choices_so_far)
+        self.add_representative_items_to_children(curr_cluster)
 
         # return the representative items of the child clusters of the matched cluster up to now
         return [each_child.rep_item for each_child in curr_cluster.child_clusters]
