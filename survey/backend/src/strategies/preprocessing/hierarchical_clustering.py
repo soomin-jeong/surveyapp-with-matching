@@ -10,7 +10,7 @@ from backend.src.strategies.preprocessing.matrix_builder import MatrixBuilder
 
 # the number of candidates (options) at questions for the online users
 # for example, if this var is 5, users will see at most 5 options to choose among at each question.
-from backend.src.strategies.preprocessing.utils import clustered_result_path, raw_dataset_path
+from backend.src.utils.utils import clustered_result_path, raw_dataset_path
 
 
 def depth(l):
@@ -20,17 +20,19 @@ def depth(l):
         return 0
 
 
-class HierarchicalCluster:
-    class UserCluster:
-        def __init__(self, is_root=False):
-            self.is_root: bool = is_root
-            self.parent_cluster = None
-            self.child_clusters = []
-            self.user_ids: [int] = []
-            self.user_cnt: int = 0
+class UserCluster:
+    def __init__(self, is_root=False):
+        self.is_root: bool = is_root
+        self.parent_cluster = None
+        self.child_clusters = []
+        self.user_ids: [int] = []
+        self.user_cnt: int = 0
 
-        def __repr__(self):
-            return repr(f'{self.user_cnt}: {self.user_ids}')
+    def __repr__(self):
+        return repr(f'{self.user_cnt}: {self.user_ids}')
+
+
+class HierarchicalCluster:
 
     def __init__(self, dataset_name: str):
         self.depth: int = 0
@@ -44,7 +46,8 @@ class HierarchicalCluster:
 
             # TODO: consider other options for the fillna
             # filling the missing data with the column-wise (item-wise) average rating of the item
-            self.rating_matrix_na_filled = self.rating_matrix.fillna(self.rating_matrix.mean(), axis=0)
+            # self.rating_matrix_na_filled = self.rating_matrix.fillna(self.rating_matrix.mean(), axis=0)
+            self.rating_matrix_na_filled = self.rating_matrix.fillna(-1, axis=0)
 
             self.root_cluster = self._cluster_users_by_rating()
 
@@ -77,7 +80,7 @@ class HierarchicalCluster:
         return matrix_builder.rating_matrix
 
     def _cluster_users_by_rating(self):
-        root_cluster = self.UserCluster(is_root=True)
+        root_cluster = UserCluster(is_root=True)
         root_cluster.user_ids = self.rating_matrix_na_filled.index.to_list()
         root_cluster.user_cnt = len(root_cluster.user_ids)
 
@@ -98,7 +101,7 @@ class HierarchicalCluster:
         # handling exceptional cases where the users or the items are too few,
         # as PCA requires them to be more than the number of components
 
-        if unique_user_cnt < MAXIMUM_CANDIDATES or unique_item_cnt:
+        if unique_user_cnt <= MAXIMUM_CANDIDATES or unique_item_cnt <= MAXIMUM_CANDIDATES:
 
             kmeanModel = KMeans(n_clusters=2)
             kmeanModel.fit(curr_rating_matrix)
@@ -157,7 +160,7 @@ class HierarchicalCluster:
         # for each child cluster, assign the parent cluster and user_ids
         for each_label in range(best_k_means.n_clusters):
             child_rating_matrix = curr_rating_matrix[curr_rating_matrix['labels'] == each_label]
-            child = self.UserCluster()
+            child = UserCluster()
             child.user_ids = child_rating_matrix.index.to_list()
             child.user_cnt = len(child.user_ids)
             child.parent_cluster = curr_cluster

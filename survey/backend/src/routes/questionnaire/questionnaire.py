@@ -42,7 +42,7 @@ def handle_questionnaire():
         '''
             format of data sent to the frontend
             {
-                current_ratings: {'126':'3.0', '48675': '1.0', '539':'4.0' ..},
+                choices_so_far: {'126':'3.0', '48675': '1.0', '539':'4.0' ..},
                 'next_item': {
                     'item_id': 1625,
                     'description': {

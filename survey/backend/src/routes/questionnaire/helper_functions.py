@@ -62,7 +62,7 @@ def send_survey_details(participant_token):
 
     if curr_ratings:
         prev_session_items = [{
-            'current_ratings': curr_ratings,
+            'choices_so_far': curr_ratings,
             'next_item': create_item_descriptions(i) 
             }for i in curr_ratings.keys()]
     
@@ -107,7 +107,7 @@ def send_next_item_and_current_ratings(participant_token):
     try:
         ## if the question number shows it's first question asked
         next_item = create_item_descriptions(strategy_class_instance.get_next_items(all_curr_ratings))
-        payload = {"current_ratings": json.loads(all_curr_ratings), "next_item": next_item}
+        payload = {"choices_so_far": json.loads(all_curr_ratings), "next_item": next_item}
         return payload
 
     except Exception as e:

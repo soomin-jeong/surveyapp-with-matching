@@ -7,6 +7,11 @@ import string
 import random
 import csv
 
+CURRENT_PATH = os.path.dirname(os.path.abspath(__file__))
+CLUSTERED_RESULT_PATH = f'{CURRENT_PATH}/../../data/clustered_results'
+RAW_DATASET_PATH = f'{CURRENT_PATH}/../../data/datasets'
+RATINGS_FILE_NAME = 'ratings.csv'
+RESULT_FILE_NAME = 'HierarchicalClustering.pkl'
 
 
 
@@ -65,3 +70,19 @@ def generate_random_reclists(dataset_file_path, save_file_path, reclist_length):
             res = [u] + (random.choices(all_items, k=reclist_length))
             write.writerow(res)
             #print(res)
+
+
+def clustered_result_path(dataset_name):
+    return os.path.join(CLUSTERED_RESULT_PATH, dataset_name, RESULT_FILE_NAME)
+
+
+def raw_dataset_path(dataset_name):
+    return os.path.join(RAW_DATASET_PATH, dataset_name, RATINGS_FILE_NAME)
+
+
+def convert_current_ratings_str_into_list(current_ratings_str: str) -> [int]:
+    ## convert the chosen items as string into list
+    if current_ratings_str == "[]" or current_ratings_str is None:
+        return []
+    else:
+        return current_ratings_str[1:-1].split(',')

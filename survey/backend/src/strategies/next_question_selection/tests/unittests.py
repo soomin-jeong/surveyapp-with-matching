@@ -8,7 +8,7 @@ from backend.src.strategies.next_question_selection.implemented_strategies.rated
 from backend.src.strategies.next_question_selection.implemented_strategies.naive_item_selection_strategy import Strategy as s_naive
 
 from backend.src.strategies.preprocessing.hierarchical_clustering import HierarchicalCluster
-from backend.src.strategies.preprocessing.utils import raw_dataset_path
+from backend.src.utils.utils import raw_dataset_path
 from backend.settings import ITEM_COL_NAME
 
 
@@ -96,17 +96,27 @@ def test_rated_by_most_st_has_the_most_ratings():
     rated_by_most_st = s_rated_most('test2')
 
     # the strategy should return 1262 and 1984 as the items to choose from two clusters: [412, 459, 477] [219, 297, 298]
-    assert rated_by_most_st.get_next_items("[]") == [1262, 1984]
+    # assert rated_by_most_st.get_next_items("[]") == [1262, 1984]
+    assert rated_by_most_st.get_next_items("[]") == [5618, 1084]
 
     # assume user chose 1262, matched with [412, 459, 477] cluster
     # the strategy should return 1262 and 1984 as the items to choose from two clusters: [412, 459] [477]
-    assert rated_by_most_st.get_next_items("[1262]") == [1262, 1084]
+    assert rated_by_most_st.get_next_items("[5618]") == [1262, 1084]
 
     # assume user chose 1084, matched with [412] cluster
     # now that the user was matched with a cluster with only one user (id: 412), the `get_next_items` return an empty list
     assert rated_by_most_st.get_next_items("[1262, 1084]") == []
 
 
+def test_rated_by_most_st_adds_representative_item_to_child_clusters():
+    # test2 data set was designed so that clusters at each level does not contain any overlapping items rated
+    # first child clusters: ['2: [219, 412]', '4: [297, 298, 459, 477]']
+    # representative items (in the same order of child clusters): [1074,  5618]
 
-def test_skipping_to_next_question_if_prev_answer_already_matches_with_cluster():
-    pass
+    rated_by_most_st = s_rated_most('test2')
+    root_cluster = rated_by_most_st.clustering.root_cluster
+    rated_by_most_st.add_representative_items_to_children(root_cluster)
+    question_candidates_of_root = [each_child.rep_item for each_child in root_cluster.child_clusters]
+    assert 5618 in question_candidates_of_root and \
+        1084 in question_candidates_of_root and \
+        len(question_candidates_of_root) == 2
