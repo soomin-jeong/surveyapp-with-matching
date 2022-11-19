@@ -50,6 +50,35 @@ def test_rated_by_most_st_has_the_most_ratings():
     # their child clusters [459, 477] [297, 298] both rated 5618  the most times (twice)
     assert rated_by_most_st.get_next_items("[5618]") == [5618, 5618]
 
+    # user chose either [459, 477] or [297, 298], as both of their representative items are the same (5618)
+    assert rated_by_most_st.get_next_items("[5618, 5618]") == [5618, 5618]
+
+    assert rated_by_most_st.get_next_items("[5618, 5618, 5618]") == []
+
+    assert rated_by_most_st.has_next("[5618, 5618, 5618]") == False
+
+'''
+Assume a case where the user answered the last question,
+and there is no more items to choose from,
+because the user was already matched with a cluster with only one user in it
+'''
+def test_rated_by_most_st_returns_has_next_correctly():
+    rated_by_most_st = s_rated_most('test2')
+
+    choices_till_the_last_level = "[5618, 5618, 5618]"
+
+    # the strategy is expected to return empty list as the next items
+    next_items = rated_by_most_st.get_next_items(choices_till_the_last_level)
+    assert next_items == []
+
+    # the strategy is expected to show that it does not have next items to return any more
+    assert rated_by_most_st.has_next(choices_till_the_last_level) is False
+
+    # the matched current cluster is expected to have only one user in it, without any child clusters
+    matched_curr = rated_by_most_st._get_cluster_matched_up_to_now(choices_till_the_last_level)
+    assert len(matched_curr.child_clusters) == 0
+    assert matched_curr.user_cnt == 1
+
 
 def test_rated_by_most_st_adds_representative_item_to_child_clusters():
     # test2 data set was designed so that clusters at each level does not contain any overlapping items rated

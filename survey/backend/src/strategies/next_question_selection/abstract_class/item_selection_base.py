@@ -12,6 +12,16 @@ class BaseStrategy(metaclass=abc.ABCMeta):
         raise NotImplementedError("{} should be implemented".format(self.__class__.__name__))
 
     @abc.abstractmethod
+    def has_next(self, *args, **kwargs) -> bool:
+        """
+        This function returns if this strategy has next items to return
+        If it returns false, it means that it has already reached the final level of hierarchical clustering,
+        where the cluster has only one user in it.
+        In this case, regardless of the matching strategy, the offline user should be matched with the online user
+        """
+        raise NotImplementedError("{} should be implemented".format(self.__class__.__name__))
+
+    @abc.abstractmethod
     def get_next_items(self,  *args, **kwargs) -> [int]:
         """
         Args may contain...

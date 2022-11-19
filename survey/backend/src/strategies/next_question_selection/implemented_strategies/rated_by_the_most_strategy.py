@@ -12,6 +12,17 @@ class Strategy(BaseStrategy):
         # group of item ids to ask as candidates to choose from at each question (in the order of questions)
         # self.question_candidates: [int] = self.get_question_candidates()
 
+    def has_next(self, choices_so_far_str: str) -> bool:
+        choices_so_far = convert_current_ratings_str_into_list(choices_so_far_str)
+        curr_cluster = self._get_cluster_matched_up_to_now(choices_so_far)
+
+        # if the curr_cluster has child clusters, it has items to return
+        # else, it's the cluster with one user (like a leaf node in a tree)
+        if curr_cluster.child_clusters:
+            return True
+        else:
+            return False
+
     def _get_representative_item_of_cluster(self, cluster: UserCluster) -> int:
 
         # select item ratings by the users in each cluster in the data frame
@@ -36,7 +47,7 @@ class Strategy(BaseStrategy):
 
         return question_candidates
 
-    def get_cluster_matched_up_to_now(self, choices_so_far: [int]):
+    def _get_cluster_matched_up_to_now(self, choices_so_far: [int]) -> UserCluster:
         curr_cluster = self.clustering.root_cluster
 
         for each_choice in choices_so_far:
@@ -50,7 +61,7 @@ class Strategy(BaseStrategy):
         choices_so_far = convert_current_ratings_str_into_list(choices_so_far_str)
 
         # find the cluster that the user is matched depending on the choices up to now
-        curr_cluster = self.get_cluster_matched_up_to_now(choices_so_far)
+        curr_cluster = self._get_cluster_matched_up_to_now(choices_so_far)
         self.add_representative_items_to_children(curr_cluster)
 
         # return the representative items of the child clusters of the matched cluster up to now
