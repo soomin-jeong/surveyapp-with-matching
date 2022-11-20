@@ -6,10 +6,14 @@ import random
 import csv
 
 CURRENT_PATH = os.path.dirname(os.path.abspath(__file__))
-CLUSTERED_RESULT_PATH = f'{CURRENT_PATH}/../../data/clustered_results'
+
 RAW_DATASET_PATH = f'{CURRENT_PATH}/../../data/datasets'
+CLUSTERED_RESULT_PATH = f'{CURRENT_PATH}/../../data/clustered_results'
+STRATEGY_RESULT_PATH = f'{CURRENT_PATH}/../../data/strategy_rep_items'
+
 RATINGS_FILE_NAME = 'ratings.csv'
-RESULT_FILE_NAME = 'HierarchicalClustering.pkl'
+CLUSTERED_RESULT_FILE_NAME = 'HierarchicalClustering.pkl'
+STRATEGY_RESULT_FILE_NAME = 'StrategyRep.pkl'
 
 
 
@@ -67,15 +71,18 @@ def generate_random_reclists(dataset_file_path, save_file_path, reclist_length):
         for u in all_users:
             res = [u] + (random.choices(all_items, k=reclist_length))
             write.writerow(res)
-            #print(res)
-
-
-def clustered_result_path(dataset_name):
-    return os.path.join(CLUSTERED_RESULT_PATH, dataset_name, RESULT_FILE_NAME)
 
 
 def raw_dataset_path(dataset_name):
     return os.path.join(RAW_DATASET_PATH, dataset_name, RATINGS_FILE_NAME)
+
+
+def clustered_result_path(dataset_name):
+    return os.path.join(CLUSTERED_RESULT_PATH, dataset_name, CLUSTERED_RESULT_FILE_NAME)
+
+
+def strategy_result_path(strategy_name, dataset_name):
+    return os.path.join(STRATEGY_RESULT_PATH, strategy_name, dataset_name, STRATEGY_RESULT_FILE_NAME)
 
 
 def convert_current_ratings_str_into_list(current_ratings_str: str) -> [int]:

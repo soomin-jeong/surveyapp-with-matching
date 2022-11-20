@@ -1,5 +1,6 @@
+import os
+
 from backend.src.strategies.next_question_selection.abstract_class.item_selection_base import BaseStrategy
-from backend.src.strategies.preprocessing.hierarchical_clustering import HierarchicalCluster
 from backend.src.utils.utils import convert_current_ratings_str_into_list
 
 from backend.src.strategies.preprocessing.hierarchical_clustering import UserCluster
@@ -8,12 +9,10 @@ from backend.src.strategies.next_question_selection.user_cluster_with_representa
 
 
 class Strategy(BaseStrategy):
-    def __init__(self, dataset_name: str):
-        self.dataset_name = dataset_name
-        self.clustering = HierarchicalCluster(dataset_name)
+    strategy_name = 'favorite_item'
 
-        # add representative items to each cluster
-        self.add_representative_item_to_user_clusters_in_hc(self.clustering.root_cluster)
+    def __init__(self, dataset_name: str):
+        super(Strategy, self).__init__(dataset_name)
 
     def add_representative_item_to_user_clusters_in_hc(self, curr_cluster: UserCluster):
         self.add_representative_items_to_children(curr_cluster)
@@ -24,15 +23,9 @@ class Strategy(BaseStrategy):
         child_clusters_with_rep_item = []
         for each_child in parent_cluster.child_clusters:
             # this strategy regards an item with the highest average rating as representative item
-            if each_child.user_cnt > 1:
-                rep_item = self._get_representative_item_of_cluster(each_child)
-                user_cluster_with_rep_item = UserClusterRep(each_child, rep_item)
-                child_clusters_with_rep_item.append(user_cluster_with_rep_item)
-            else:
-                # though the clusters with only one user should not contain a representative item,
-                # we are still adding it as we are overwriting the child clusters
-                child_clusters_with_rep_item.append(each_child)
-
+            rep_item = self._get_representative_item_of_cluster(each_child)
+            user_cluster_with_rep_item = UserClusterRep(each_child, rep_item)
+            child_clusters_with_rep_item.append(user_cluster_with_rep_item)
         parent_cluster.child_clusters = child_clusters_with_rep_item
 
     def _get_representative_item_of_cluster(self, cluster: UserCluster) -> int:
@@ -40,7 +33,6 @@ class Strategy(BaseStrategy):
         # select item ratings by the users in each cluster in the data frame
         df_items_rated_by_the_cluster = self.clustering.rating_matrix.filter(items=cluster.user_ids, axis='rows')
 
-        # if the representative items are redundant, replace it with the next level
         average_rating_per_item = df_items_rated_by_the_cluster.mean(axis='rows')
 
         # sort it descending and pick the first one

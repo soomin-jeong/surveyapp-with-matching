@@ -1,7 +1,7 @@
 import unittest
 
 from backend.src.strategies.next_question_selection.implemented_strategies.rated_by_the_most_strategy import Strategy as s_rated_most
-from backend.src.strategies.next_question_selection.implemented_strategies.random_selection_strategy import Strategy as s_naive
+from backend.src.strategies.next_question_selection.implemented_strategies.random_selection_strategy import Strategy as s_random
 from backend.src.strategies.next_question_selection.implemented_strategies.favorite_item_strategy import Strategy as s_favorite
 
 from backend.src.strategies.next_question_selection.user_cluster_with_representative_item import \
@@ -15,16 +15,17 @@ level3: 219 / 412  // 297, 298 / 459, 477
 level3: -         /// 297 / 298 // 459 / 477
 '''
 
-class NaiveStrategyTest(unittest.TestCase):
+
+class RandomStrategyTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        cls.naive_item_selection_st = s_naive('test1')
+        cls.random_item_selection_st = s_random('test1')
 
-    def test_naive_item_selection_strategy(self):
+    def test_random_item_selection_strategy(self):
         current_ratings = "[5618]"
-        next_items = self.naive_item_selection_st.get_next_items(current_ratings)
-        assert 5618 not in next_items
-        assert 1262 in next_items or 1084 in next_items
+        next_items = self.random_item_selection_st.get_next_items(current_ratings)
+        # though it's random, we can test it as the random selection result is saved
+        assert set(next_items) == {5618, 1262}
 
 
 class RatedByMostStrategyTest(unittest.TestCase):
@@ -81,7 +82,7 @@ class RatedByMostStrategyTest(unittest.TestCase):
         assert set(question_candidates_of_root) == {1084, 5618}
 
 
-class FavoriteItemStrategy(unittest.TestCase):
+class FavoriteItemStrategyTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
@@ -95,4 +96,23 @@ class FavoriteItemStrategy(unittest.TestCase):
         # fav:    item 1084 //  item 5618
         question_candidates_of_root = [each_child.rep_item for each_child in root_cluster.child_clusters]
         assert set(question_candidates_of_root) == {1084, 5618}
+
+    def test_favorite_strategy_reaches_the_cluster_with_one_user(self):
+        matched_curr = get_cluster_matched_up_to_now(self.favorite_strategy.clustering.root_cluster,
+                                                     [5618, 1262, 1984])
+        assert matched_curr.user_ids == [298]
+
+
+class FavoriteItemStrategyTestSampleData(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.favorite_strategy = s_favorite('movielens_small')
+
+    def test_favorite_strategy_returns_favorite_item_of_cluster(self):
+        root_cluster = self.favorite_strategy.clustering.root_cluster
+
+        # favorite items of the fist level of hierarchy:
+        question_candidates_of_root = [each_child.rep_item for each_child in root_cluster.child_clusters]
+        assert set(question_candidates_of_root) == {31364, 171749, 8235, 1262, 3096}
 

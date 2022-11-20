@@ -8,12 +8,10 @@ from backend.src.utils.utils import convert_current_ratings_str_into_list
 
 
 class Strategy(BaseStrategy):
-    def __init__(self, dataset_name: str):
-        self.dataset_name = dataset_name
-        self.clustering = HierarchicalCluster(dataset_name)
+    strategy_name = 'rated_by_the_most'
 
-        # add representative items to each cluster
-        self.add_representative_item_to_user_clusters_in_hc(self.clustering.root_cluster)
+    def __init__(self, dataset_name: str):
+        super(Strategy, self).__init__(dataset_name)
 
     def add_representative_item_to_user_clusters_in_hc(self, curr_cluster: UserCluster):
         self.add_representative_items_to_children(curr_cluster)
@@ -24,7 +22,7 @@ class Strategy(BaseStrategy):
         child_clusters_with_rep_item = []
         for each_child in parent_cluster.child_clusters:
             # this strategy regards an item rated the most times by the users in the cluster as the representative item
-            # therfore, when there is only one item, there is no item rated the most times,
+            # therefore, when there is only one item, there is no item rated the most times,
             # because every item is rated once or not at all
             if each_child.user_cnt > 1:
                 rep_item = self._get_representative_item_of_cluster(each_child)
