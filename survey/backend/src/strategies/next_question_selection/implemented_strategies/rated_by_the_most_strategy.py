@@ -1,36 +1,88 @@
-import json
-import pandas as pd
-import numpy as np
-import random
 from backend.src.strategies.next_question_selection.abstract_class.item_selection_base import BaseStrategy
-import ast
+from backend.src.strategies.preprocessing.hierarchical_clustering import HierarchicalCluster
+from backend.src.strategies.preprocessing.hierarchical_clustering import UserCluster
+from backend.src.strategies.next_question_selection.user_cluster_with_representative_item import UserClusterRep
+
+from backend.src.utils.utils import convert_current_ratings_str_into_list
 
 
 class Strategy(BaseStrategy):
-    def __init__(self, rating_df: pd.DataFrame):
-        self.rating_df = rating_df
+    def __init__(self, dataset_name: str):
+        self.dataset_name = dataset_name
+        self.clustering = HierarchicalCluster(dataset_name)
 
-    def get_next_item(self, current_ratings: str) -> str:
-        
-        ##convert the ratings that came as string to dict
-        current_ratings_dict = ast.literal_eval(current_ratings)
-        already_rated_items = []
+        # add representative items to each cluster
+        self.add_representative_item_to_user_clusters_in_hc(self.clustering.root_cluster)
 
-        ## for first item, the dict does not contain anything
-        if current_ratings_dict:
-            already_rated_items = list(ast.literal_eval(current_ratings))
+    def add_representative_item_to_user_clusters_in_hc(self, curr_cluster: UserCluster):
+        self.add_representative_items_to_children(curr_cluster)
+        for each_child_cluster in curr_cluster.child_clusters:
+            self.add_representative_item_to_user_clusters_in_hc(each_child_cluster)
 
-        # value_counts() returns how many times each movie appeared in the ratings in a descending orders
-        # index: movie_id, value: count
-        most_popular_movies = self.rating_df.loc[:,'movieId'].value_counts().index.tolist()[:10]
-        next_item = random.choice(most_popular_movies)
+    def add_representative_items_to_children(self, parent_cluster: UserCluster):
+        child_clusters_with_rep_item = []
+        for each_child in parent_cluster.child_clusters:
+            # this strategy regards an item rated the most times by the users in the cluster as the representative item
+            # therfore, when there is only one item, there is no item rated the most times,
+            # because every item is rated once or not at all
+            if each_child.user_cnt > 1:
+                rep_item = self._get_representative_item_of_cluster(each_child)
+                user_cluster_with_rep_item = UserClusterRep(each_child, rep_item)
+                child_clusters_with_rep_item.append(user_cluster_with_rep_item)
+            else:
+                # though the clusters with only one user should not contain a representative item,
+                # we are still adding it as we are overwriting the child clusters
+                child_clusters_with_rep_item.append(each_child)
 
-        # most_popular_movies_minus_already_rated = most_popular_movies.filter(already_rated_items0)
-        # next_itme = random.choice(most_popular_movies_minus_already_rated)
+        parent_cluster.child_clusters = child_clusters_with_rep_item
 
-        while next_item in already_rated_items:
-            next_item = random.choice(most_popular_movies)
-        return next_item
-    
+    def has_next(self, choices_so_far_str: str) -> bool:
+        choices_so_far = convert_current_ratings_str_into_list(choices_so_far_str)
+        curr_cluster = self._get_cluster_matched_up_to_now(choices_so_far)
+
+        # if the curr_cluster has child clusters, it has items to return
+        # else, it's the cluster with one user (like a leaf node in a tree)
+        return curr_cluster.user_cnt > 2
+
+    def _get_representative_item_of_cluster(self, cluster: UserCluster) -> int:
+
+        # select item ratings by the users in each cluster in the data frame
+        df_items_rated_by_the_cluster = self.clustering.rating_matrix.filter(items=cluster.user_ids, axis='rows')
+
+        # if the representative items are redundant, replace it with the next level
+        rating_cnt_per_item = df_items_rated_by_the_cluster.count()
+
+        # sort it ascending and pick the last one
+        return rating_cnt_per_item.sort_values().keys()[-1]
+
+    def get_question_candidates(self, parent_cluster: UserCluster):
+        question_candidates = []
+
+        for each_child in parent_cluster.child_clusters:
+            representative_item = self._get_representative_item_of_cluster(each_child)
+            question_candidates.append(representative_item)
+
+        return question_candidates
+
+    def _get_cluster_matched_up_to_now(self, choices_so_far: [int]) -> UserCluster:
+        curr_cluster = self.clustering.root_cluster
+
+        for each_choice in choices_so_far:
+            for each_child_cluster in curr_cluster.child_clusters:
+                if each_choice == each_child_cluster.rep_item:
+                    curr_cluster = each_child_cluster
+                    break
+        return curr_cluster
+
+    def get_next_items(self, choices_so_far_str: str) -> [int]:
+        choices_so_far = convert_current_ratings_str_into_list(choices_so_far_str)
+        # find the cluster that the user is matched depending on the choices up to now
+        curr_cluster = self._get_cluster_matched_up_to_now(choices_so_far)
+
+        if curr_cluster.user_cnt > 2:
+            # return the representative items of the child clusters of the matched cluster up to now
+                return [each_child.rep_item for each_child in curr_cluster.child_clusters]
+        else:
+            return []
 
 

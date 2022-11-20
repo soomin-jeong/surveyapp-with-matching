@@ -21,7 +21,7 @@ class Strategy(BaseStrategy):
         self.__dataset_path = value
 
     
-    def get_next_item(self, current_ratings):
+    def get_next_items(self, current_ratings):
         
         ##convert the ratings that came as string to dict
         current_ratings_dict = ast.literal_eval(current_ratings)

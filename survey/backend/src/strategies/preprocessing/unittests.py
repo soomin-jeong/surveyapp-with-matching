@@ -8,9 +8,9 @@ import pickle
 
 from backend.src.strategies.preprocessing.hierarchical_clustering import HierarchicalCluster
 from backend.src.strategies.preprocessing.matrix_builder import MatrixBuilder
-from backend.src.strategies.preprocessing.utils import clustered_result_path, raw_dataset_path
+from backend.src.utils.utils import clustered_result_path, raw_dataset_path
 
-from backend.src.strategies.preprocessing.hierarchical_clustering import MAXIMUM_CANDIDATES
+from backend.settings import MAXIMUM_CANDIDATES, USER_COL_NAME
 
 '''
 +-----+------+---+------------+
@@ -35,7 +35,7 @@ from backend.src.strategies.preprocessing.hierarchical_clustering import MAXIMUM
 Expected to be clustered: (((459), (477)), ((298), (219)))
 '''
 
-DATASET_PATH = '../../../data/datasets/'
+DATASET_PATH = 'backend/src/strategies/preprocessing/data/datasets/'
 
 TEST1_DATASET_NAME = 'test1'
 TEST1_DF = pd.read_csv(raw_dataset_path(TEST1_DATASET_NAME))
@@ -81,9 +81,9 @@ class HierarchicalClusterTest(unittest.TestCase):
         cls.hc2 = HierarchicalCluster(TEST2_DATASET_NAME)
 
     def test_if_user_ids_were_set_as_index(self):
-        raw_user_ids = TEST1_DF['userId'].unique()
+        raw_user_ids = TEST1_DF[USER_COL_NAME].unique()
         raw_user_ids.sort()
-        assert self.hc1.rating_matrix.index.tolist() == list(raw_user_ids)
+        assert self.hc1.rating_matrix_na_filled.index.tolist() == list(raw_user_ids)
 
     def test_HC_clusters_into_two_given_users_less_than_5(self):
         root_cluster = self.hc1.root_cluster
@@ -98,7 +98,7 @@ class HierarchicalClusterTest(unittest.TestCase):
 
     def test_root_cluster_contains_all_users(self):
         # using set instead of unique for sorting
-        user_ids = TEST1_DF['userId'].unique()
+        user_ids = TEST1_DF[USER_COL_NAME].unique()
         user_ids.sort()
         assert self.hc1.root_cluster.user_ids == user_ids.tolist()
 
@@ -125,7 +125,7 @@ class HierarchicalClusterTest(unittest.TestCase):
     def test_clustered_result_is_saved(self):
         with open(clustered_result_path(TEST1_DATASET_NAME), 'rb') as cluster_file:
             temp_hc = pickle.load(cluster_file)
-            assert self.hc1.rating_matrix.equals(temp_hc.rating_matrix)
+            assert self.hc1.rating_matrix_na_filled.equals(temp_hc.rating_matrix_na_filled)
             assert len(self.hc1.root_cluster.child_clusters) == len(temp_hc.root_cluster.child_clusters)
 
 

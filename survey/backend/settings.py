@@ -1,0 +1,4 @@
+USER_COL_NAME = 'userId'
+ITEM_COL_NAME = 'movieId'
+RATING_COL_NAME = 'rating'
+MAXIMUM_CANDIDATES = 5
