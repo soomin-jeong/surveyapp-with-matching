@@ -39,7 +39,7 @@ class Strategy(BaseStrategy):
 
     def has_next(self, choices_so_far_str: str) -> bool:
         choices_so_far = convert_current_ratings_str_into_list(choices_so_far_str)
-        curr_cluster = get_cluster_matched_up_to_now(choices_so_far)
+        curr_cluster = get_cluster_matched_up_to_now(self.clustering.root_cluster, choices_so_far)
 
         # if the curr_cluster has child clusters, it has items to return
         # else, it's the cluster with one user (like a leaf node in a tree)

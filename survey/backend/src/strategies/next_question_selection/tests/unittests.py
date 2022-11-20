@@ -35,8 +35,7 @@ class RatedByMostStrategyTest(unittest.TestCase):
         
     def test_rated_by_most_st_has_the_most_ratings(self):
         # the strategy should return [5618, 1084] as the items to choose from two clusters: [412, 219] [459, 477, 297, 298]
-        assert self.rated_by_most_st.get_next_items("[]") == [5618, 1084] or \
-               self.rated_by_most_st.get_next_items("[]") == [1084, 5618]
+        assert set(self.rated_by_most_st.get_next_items("[]")) == {5618, 1084}
     
         # assume user chose 5618, matched with [459, 477, 297, 298] cluster
         # their child clusters [459, 477] [297, 298] both rated 5618  the most times (twice)
@@ -79,9 +78,7 @@ class RatedByMostStrategyTest(unittest.TestCase):
     
         root_cluster = self.rated_by_most_st.clustering.root_cluster
         question_candidates_of_root = [each_child.rep_item for each_child in root_cluster.child_clusters]
-        assert 5618 in question_candidates_of_root and \
-            1084 in question_candidates_of_root and \
-            len(question_candidates_of_root) == 2
+        assert set(question_candidates_of_root) == {1084, 5618}
 
 
 class FavoriteItemStrategy(unittest.TestCase):
@@ -97,6 +94,5 @@ class FavoriteItemStrategy(unittest.TestCase):
         # level2: 219, 412   // 297, 298, 459, 477
         # fav:    item 1084 //  item 5618
         question_candidates_of_root = [each_child.rep_item for each_child in root_cluster.child_clusters]
-        assert 5618 in question_candidates_of_root and \
-               1084 in question_candidates_of_root and \
-               len(question_candidates_of_root) == 2
+        assert set(question_candidates_of_root) == {1084, 5618}
+
