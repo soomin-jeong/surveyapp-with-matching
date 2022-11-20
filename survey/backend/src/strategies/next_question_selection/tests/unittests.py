@@ -11,7 +11,7 @@ from backend.src.strategies.next_question_selection.user_cluster_with_representa
     get_cluster_matched_up_to_now
 
 '''
-the hierarchical clustering of 'TEST2'
+the hierarchical clustering of 'test2'
 level1: 219, 412, 297, 298, 459, 477
 level2: 219, 412   // 297, 298, 459, 477
 level3: 219 / 412  // 297, 298 / 459, 477
