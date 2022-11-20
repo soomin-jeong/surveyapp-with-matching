@@ -1,6 +1,7 @@
 from backend.src.strategies.next_question_selection.abstract_class.item_selection_base import BaseStrategy
 from backend.src.strategies.preprocessing.hierarchical_clustering import HierarchicalCluster
 from backend.src.strategies.preprocessing.hierarchical_clustering import UserCluster
+from backend.src.strategies.next_question_selection.user_cluster_with_representative_item import UserClusterRep
 
 from backend.src.utils.utils import convert_current_ratings_str_into_list
 
@@ -9,8 +10,31 @@ class Strategy(BaseStrategy):
     def __init__(self, dataset_name: str):
         self.dataset_name = dataset_name
         self.clustering = HierarchicalCluster(dataset_name)
-        # group of item ids to ask as candidates to choose from at each question (in the order of questions)
-        # self.question_candidates: [int] = self.get_question_candidates()
+
+        # add representative items to each cluster
+        self.add_representative_item_to_user_clusters_in_hc(self.clustering.root_cluster)
+
+    def add_representative_item_to_user_clusters_in_hc(self, curr_cluster: UserCluster):
+        self.add_representative_items_to_children(curr_cluster)
+        for each_child_cluster in curr_cluster.child_clusters:
+            self.add_representative_item_to_user_clusters_in_hc(each_child_cluster)
+
+    def add_representative_items_to_children(self, parent_cluster: UserCluster):
+        child_clusters_with_rep_item = []
+        for each_child in parent_cluster.child_clusters:
+            # this strategy regards an item rated the most times by the users in the cluster as the representative item
+            # therfore, when there is only one item, there is no item rated the most times,
+            # because every item is rated once or not at all
+            if each_child.user_cnt > 1:
+                rep_item = self._get_representative_item_of_cluster(each_child)
+                user_cluster_with_rep_item = UserClusterRep(each_child, rep_item)
+                child_clusters_with_rep_item.append(user_cluster_with_rep_item)
+            else:
+                # though the clusters with only one user should not contain a representative item,
+                # we are still adding it as we are overwriting the child clusters
+                child_clusters_with_rep_item.append(each_child)
+
+        parent_cluster.child_clusters = child_clusters_with_rep_item
 
     def has_next(self, choices_so_far_str: str) -> bool:
         choices_so_far = convert_current_ratings_str_into_list(choices_so_far_str)
@@ -18,10 +42,7 @@ class Strategy(BaseStrategy):
 
         # if the curr_cluster has child clusters, it has items to return
         # else, it's the cluster with one user (like a leaf node in a tree)
-        if curr_cluster.child_clusters:
-            return True
-        else:
-            return False
+        return curr_cluster.user_cnt > 2
 
     def _get_representative_item_of_cluster(self, cluster: UserCluster) -> int:
 
@@ -33,10 +54,6 @@ class Strategy(BaseStrategy):
 
         # sort it ascending and pick the last one
         return rating_cnt_per_item.sort_values().keys()[-1]
-
-    def add_representative_items_to_children(self, parent_cluster: UserCluster):
-        for each_child in parent_cluster.child_clusters:
-            each_child.rep_item = self._get_representative_item_of_cluster(each_child)
 
     def get_question_candidates(self, parent_cluster: UserCluster):
         question_candidates = []
@@ -59,12 +76,13 @@ class Strategy(BaseStrategy):
 
     def get_next_items(self, choices_so_far_str: str) -> [int]:
         choices_so_far = convert_current_ratings_str_into_list(choices_so_far_str)
-
         # find the cluster that the user is matched depending on the choices up to now
         curr_cluster = self._get_cluster_matched_up_to_now(choices_so_far)
-        self.add_representative_items_to_children(curr_cluster)
 
-        # return the representative items of the child clusters of the matched cluster up to now
-        return [each_child.rep_item for each_child in curr_cluster.child_clusters]
+        if curr_cluster.user_cnt > 2:
+            # return the representative items of the child clusters of the matched cluster up to now
+                return [each_child.rep_item for each_child in curr_cluster.child_clusters]
+        else:
+            return []
 
 

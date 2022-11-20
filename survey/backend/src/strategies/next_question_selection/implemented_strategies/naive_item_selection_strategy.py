@@ -10,6 +10,10 @@ class Strategy(BaseStrategy):
         self.dataset_name = dataset_name
         self.clustering = HierarchicalCluster(dataset_name)
 
+    def has_next(self, choices_so_far_str: str) -> bool:
+        choices_so_far = convert_current_ratings_str_into_list(choices_so_far_str)
+        return len(choices_so_far) < self.clustering.rating_matrix_na_filled.columns
+
     def get_next_items(self, choices_so_far_str: str) -> [int]:
         choices_so_far = convert_current_ratings_str_into_list(choices_so_far_str)
 
