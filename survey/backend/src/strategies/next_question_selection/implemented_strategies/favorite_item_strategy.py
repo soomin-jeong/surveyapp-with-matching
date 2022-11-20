@@ -32,7 +32,6 @@ class Strategy(BaseStrategy):
 
         # select item ratings by the users in each cluster in the data frame
         df_items_rated_by_the_cluster = self.clustering.rating_matrix.filter(items=cluster.user_ids, axis='rows')
-
         average_rating_per_item = df_items_rated_by_the_cluster.mean(axis='rows')
 
         # sort it descending and pick the first one
