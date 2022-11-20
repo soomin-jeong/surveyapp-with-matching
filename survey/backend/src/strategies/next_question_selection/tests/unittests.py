@@ -1,18 +1,17 @@
 import unittest
 
-import pandas as pd
-import json
-import numpy as np
-
-from collections import Counter
-from random import choice
 from backend.src.strategies.next_question_selection.implemented_strategies.rated_by_the_most_strategy import Strategy as s_rated_most
-from backend.src.strategies.next_question_selection.implemented_strategies.naive_item_selection_strategy import Strategy as s_naive
+from backend.src.strategies.next_question_selection.implemented_strategies.random_selection_strategy import Strategy as s_naive
+from backend.src.strategies.next_question_selection.implemented_strategies.favorite_item_strategy import Strategy as s_favorite
 
-from backend.src.strategies.preprocessing.hierarchical_clustering import HierarchicalCluster
-from backend.src.utils.utils import raw_dataset_path
-from backend.settings import ITEM_COL_NAME
 
+'''
+the hierarchical clustering of 'TEST2'
+level1: 219, 412, 297, 298, 459, 477
+level2: 219, 412   // 297, 298, 459, 477
+level3: 219 / 412  // 297, 298 / 459, 477
+level3: -         /// 297 / 298 // 459 / 477
+'''
 
 class NaiveStrategyTest(unittest.TestCase):
     @classmethod
@@ -76,8 +75,25 @@ class RatedByMostStrategyTest(unittest.TestCase):
         # representative items (in the same order of child clusters): [1074,  5618]
     
         root_cluster = self.rated_by_most_st.clustering.root_cluster
-        self.rated_by_most_st.add_representative_items_to_children(root_cluster)
         question_candidates_of_root = [each_child.rep_item for each_child in root_cluster.child_clusters]
         assert 5618 in question_candidates_of_root and \
             1084 in question_candidates_of_root and \
             len(question_candidates_of_root) == 2
+
+
+class FavoriteItemStrategy(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.favorite_strategy = s_favorite('test2')
+
+    def test_favorite_strategy_returns_favorite_item_of_cluster(self):
+        root_cluster = self.favorite_strategy.clustering.root_cluster
+
+        # favorite items of the fist level of hierarchy:
+        # level2: 219, 412   // 297, 298, 459, 477
+        # fav:    item 1084 //  item 5618
+        question_candidates_of_root = [each_child.rep_item for each_child in root_cluster.child_clusters]
+        assert 5618 in question_candidates_of_root and \
+               1084 in question_candidates_of_root and \
+               len(question_candidates_of_root) == 2
