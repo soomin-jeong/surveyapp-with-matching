@@ -4,6 +4,8 @@ from backend.src.strategies.next_question_selection.implemented_strategies.rated
 from backend.src.strategies.next_question_selection.implemented_strategies.random_selection_strategy import Strategy as s_naive
 from backend.src.strategies.next_question_selection.implemented_strategies.favorite_item_strategy import Strategy as s_favorite
 
+from backend.src.strategies.next_question_selection.user_cluster_with_representative_item import \
+    get_cluster_matched_up_to_now
 
 '''
 the hierarchical clustering of 'TEST2'
@@ -64,7 +66,8 @@ class RatedByMostStrategyTest(unittest.TestCase):
         # the matched current cluster is expected to have TWO users, with two clusters with one user in each
         # as this strategy should not reach the last level (one user in one cluster)
         # the matching will be decided by the matching strategy instead
-        matched_curr = self.rated_by_most_st._get_cluster_matched_up_to_now([5618, 5618])
+        matched_curr = get_cluster_matched_up_to_now(self.rated_by_most_st.clustering.root_cluster,
+                                                     [5618, 5618])
         assert len(matched_curr.child_clusters) == 2
         assert matched_curr.user_cnt == 2
     

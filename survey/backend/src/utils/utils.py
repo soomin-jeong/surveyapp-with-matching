@@ -1,5 +1,3 @@
-from itsdangerous import exc
-from markupsafe import re
 import pandas as pd
 
 import os
@@ -86,3 +84,5 @@ def convert_current_ratings_str_into_list(current_ratings_str: str) -> [int]:
         return []
     else:
         return [int(each) for each in current_ratings_str[1:-1].split(',')]
+
+
