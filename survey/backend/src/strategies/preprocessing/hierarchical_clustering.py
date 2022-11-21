@@ -43,12 +43,6 @@ class HierarchicalCluster:
         else:
             rating_df = pd.read_csv(raw_dataset_path(dataset_name))
             self.rating_matrix = self._preprocess_input_df(rating_df)
-
-            # TODO: consider other options for the fillna
-            # filling the missing data with the column-wise (item-wise) average rating of the item
-            # self.rating_matrix_na_filled = self.rating_matrix.fillna(self.rating_matrix.mean(), axis=0)
-            self.rating_matrix_na_filled = self.rating_matrix.fillna(-1, axis=0)
-
             self.root_cluster = self._cluster_users_by_rating()
 
             # depth is the level of the hierarchy
@@ -64,7 +58,6 @@ class HierarchicalCluster:
             self.depth = temp_hc.depth
             self.root_cluster = temp_hc.root_cluster
             self.rating_matrix = temp_hc.rating_matrix
-            self.rating_matrix_na_filled = temp_hc.rating_matrix_na_filled
 
     def _save_clustered_results(self, dataset_name):
         # save the class into the CLUSTERED_RESULT_PATH
@@ -81,7 +74,7 @@ class HierarchicalCluster:
 
     def _cluster_users_by_rating(self):
         root_cluster = UserCluster(is_root=True)
-        root_cluster.user_ids = self.rating_matrix_na_filled.index.to_list()
+        root_cluster.user_ids = self.rating_matrix.index.to_list()
         root_cluster.user_cnt = len(root_cluster.user_ids)
 
         # if you'd like to use elbow method, not using the default value 5 for the clustering,
@@ -93,7 +86,12 @@ class HierarchicalCluster:
     def _build_child_clusters(self, curr_cluster: UserCluster, elbow_method: bool = False):
 
         # run k-means clusters based on elbow method
-        curr_rating_matrix = self.rating_matrix_na_filled.loc[curr_cluster.user_ids]
+        curr_rating_matrix = self.rating_matrix.loc[curr_cluster.user_ids].dropna(axis=1, how='all')
+
+        # TODO: consider other options for the fillna
+        # filling the missing data with the column-wise (item-wise) average rating of the item
+        # self.rating_matrix_na_filled = self.rating_matrix.fillna(self.rating_matrix.mean(), axis=0)
+        curr_rating_matrix = curr_rating_matrix.fillna(-1, axis=0)
         unique_user_cnt, unique_item_cnt = curr_rating_matrix.shape
 
         # assign the current cluster(self) as the parent cluster to the child clusters
