@@ -75,11 +75,11 @@ class HierarchicalCluster:
         with open(clustered_result_path(dataset_name), 'wb') as cluster_file_w:
             pickle.dump(self, cluster_file_w)
 
-    def _preprocess_input_df(self, rating_df):
+    def _preprocess_input_df(self, rating_df) -> pd.DataFrame:
         matrix_builder = MatrixBuilder(rating_df)
         return matrix_builder.rating_matrix
 
-    def _cluster_users_by_rating(self):
+    def _cluster_users_by_rating(self) -> UserCluster:
         root_cluster = UserCluster(is_root=True)
         root_cluster.user_ids = self.rating_matrix_na_filled.index.to_list()
         root_cluster.user_cnt = len(root_cluster.user_ids)

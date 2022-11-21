@@ -25,4 +25,12 @@ class UserClusterRep(UserCluster):
         return repr(f'users: {self.user_ids} / rep: {self.rep_item}')
 
 
+def get_cluster_matched_up_to_now(root_cluster: UserCluster, choices_so_far: [int]) -> UserCluster:
+    curr_cluster = root_cluster
 
+    for each_choice in choices_so_far:
+        for each_child_cluster in curr_cluster.child_clusters:
+            if each_choice == each_child_cluster.rep_item:
+                curr_cluster = each_child_cluster
+                break
+    return curr_cluster
