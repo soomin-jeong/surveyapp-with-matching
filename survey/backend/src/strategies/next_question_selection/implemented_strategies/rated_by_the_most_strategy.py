@@ -1,4 +1,4 @@
-from backend.src.strategies.next_question_selection.abstract_class.item_selection_base import BaseStrategy
+from backend.src.strategies.next_question_selection.abstract_class.item_selection_base_choice import BaseStrategyChoice
 from backend.src.strategies.preprocessing.hierarchical_clustering import HierarchicalCluster
 from backend.src.strategies.preprocessing.hierarchical_clustering import UserCluster
 from backend.src.strategies.next_question_selection.user_cluster_with_representative_item import UserClusterRep, \
@@ -7,7 +7,7 @@ from backend.src.strategies.next_question_selection.user_cluster_with_representa
 from backend.src.utils.utils import convert_current_ratings_str_into_list
 
 
-class Strategy(BaseStrategy):
+class Strategy(BaseStrategyChoice):
     strategy_name = 'rated_by_the_most'
 
     def __init__(self, dataset_name: str):

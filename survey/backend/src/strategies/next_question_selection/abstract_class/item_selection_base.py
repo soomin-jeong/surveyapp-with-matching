@@ -9,13 +9,13 @@ from backend.src.strategies.preprocessing.hierarchical_clustering import UserClu
 from backend.src.utils.utils import strategy_result_path
 
 
-## abstract SQLAlchemy Model class
-## this class does not exist as table in db, only the instantiations do
-
-
 class abstract_attribute(object):
     def __get__(self, obj, type):
         raise NotImplementedError("This attribute was not set in a subclass")
+
+
+## abstract SQLAlchemy Model class
+## this class does not exist as table in db, only the instantiations do
 
 
 class BaseStrategy(metaclass=abc.ABCMeta):
@@ -46,6 +46,7 @@ class BaseStrategy(metaclass=abc.ABCMeta):
         with open(strategy_result_path(strategy_name, dataset_name), 'wb') as strategy_file_w:
             pickle.dump(self, strategy_file_w)
 
+
     def add_representative_item_to_user_clusters_in_hc(self, curr_cluster: UserCluster):
         self.add_representative_items_to_children(curr_cluster)
         for each_child_cluster in curr_cluster.child_clusters:
@@ -63,16 +64,4 @@ class BaseStrategy(metaclass=abc.ABCMeta):
         where the cluster has only one user in it.
         In this case, regardless of the matching strategy, the offline user should be matched with the online user
         """
-        raise NotImplementedError("{} should be implemented".format(self.__class__.__name__))
-
-    @abc.abstractmethod
-    def get_next_items(self,  *args, **kwargs) -> [int]:
-        """
-        Args may contain...
-            current_ratings: ratings in dict style string (key: movieId, value: rating)
-            i.e. {'3211': '4.5'}
-            choices_so_far: items that are chosen based on the question (i.e. What's your favorite item among the following?)
-            i.e. ['3211', '412']
-        """
-        # returns one movie_id in string
         raise NotImplementedError("{} should be implemented".format(self.__class__.__name__))

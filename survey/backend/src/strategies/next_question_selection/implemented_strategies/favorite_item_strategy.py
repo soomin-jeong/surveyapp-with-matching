@@ -1,6 +1,6 @@
 import os
 
-from backend.src.strategies.next_question_selection.abstract_class.item_selection_base import BaseStrategy
+from backend.src.strategies.next_question_selection.abstract_class.item_selection_base_choice import BaseStrategyChoice
 from backend.src.utils.utils import convert_current_ratings_str_into_list
 
 from backend.src.strategies.preprocessing.hierarchical_clustering import UserCluster
@@ -8,7 +8,7 @@ from backend.src.strategies.next_question_selection.user_cluster_with_representa
     get_cluster_matched_up_to_now
 
 
-class Strategy(BaseStrategy):
+class Strategy(BaseStrategyChoice):
     strategy_name = 'favorite_item'
 
     def __init__(self, dataset_name: str):
