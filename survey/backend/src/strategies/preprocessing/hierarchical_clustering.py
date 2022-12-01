@@ -4,6 +4,7 @@ import pickle
 
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
+from sklearn.preprocessing import MinMaxScaler
 
 from backend.settings import MAXIMUM_CANDIDATES
 from backend.src.strategies.preprocessing.matrix_builder import MatrixBuilder
@@ -90,8 +91,8 @@ class HierarchicalCluster:
 
         # TODO: consider other options for the fillna
         # filling the missing data with the column-wise (item-wise) average rating of the item
-        # self.rating_matrix_na_filled = self.rating_matrix.fillna(self.rating_matrix.mean(), axis=0)
-        curr_rating_matrix = curr_rating_matrix.fillna(-1, axis=0)
+        curr_rating_matrix = curr_rating_matrix.fillna(self.rating_matrix.mean(), axis=0)
+        # curr_rating_matrix = curr_rating_matrix.fillna(-1, axis=0)
         unique_user_cnt, unique_item_cnt = curr_rating_matrix.shape
 
         # assign the current cluster(self) as the parent cluster to the child clusters
@@ -148,8 +149,8 @@ class HierarchicalCluster:
 
                 ## with PCA:
                 pca = PCA(n_components=MAXIMUM_CANDIDATES).fit(curr_rating_matrix)
-                best_k_means = KMeans(init=pca.components_, n_clusters=MAXIMUM_CANDIDATES)
 
+                best_k_means = KMeans(init=pca.components_, n_clusters=MAXIMUM_CANDIDATES)
                 best_k_means.fit(curr_rating_matrix)
 
         curr_rating_matrix['labels'] = best_k_means.labels_

@@ -125,7 +125,7 @@ class HierarchicalClusterTest(unittest.TestCase):
     def test_clustered_result_is_saved(self):
         with open(clustered_result_path(TEST1_DATASET_NAME), 'rb') as cluster_file:
             temp_hc = pickle.load(cluster_file)
-            assert self.hc1.rating_matrix_na_filled.equals(temp_hc.rating_matrix_na_filled)
+            assert self.hc1.rating_matrix.equals(temp_hc.rating_matrix)
             assert len(self.hc1.root_cluster.child_clusters) == len(temp_hc.root_cluster.child_clusters)
 
 
