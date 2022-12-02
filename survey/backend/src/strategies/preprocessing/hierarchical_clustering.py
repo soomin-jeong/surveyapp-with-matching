@@ -6,11 +6,8 @@ from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import MinMaxScaler
 
-from backend.settings import MAXIMUM_CANDIDATES
+from backend.settings import MAXIMUM_CANDIDATES, N_PCA_COMPONENTS
 from backend.src.strategies.preprocessing.matrix_builder import MatrixBuilder
-
-# the number of candidates (options) at questions for the online users
-# for example, if this var is 5, users will see at most 5 options to choose among at each question.
 from backend.src.utils.utils import clustered_result_path, raw_dataset_path
 
 
@@ -25,7 +22,7 @@ class UserCluster:
     def __init__(self, is_root=False):
         self.is_root: bool = is_root
         self.parent_cluster = None
-        self.child_clusters = []
+        self.child_clusters = []  # list of UserClusters
         self.user_ids: [int] = []
         self.user_cnt: int = 0
 
@@ -43,6 +40,7 @@ class HierarchicalCluster:
             self._load_clustered_results(dataset_name)
         else:
             rating_df = pd.read_csv(raw_dataset_path(dataset_name))
+            # converting the coordinates (ratings) into a matrix
             self.rating_matrix = self._preprocess_input_df(rating_df)
             self.root_cluster = self._cluster_users_by_rating()
 
@@ -84,6 +82,61 @@ class HierarchicalCluster:
         self._build_child_clusters(root_cluster)
         return root_cluster
 
+    def _reduce_dimensionality(self, rating_matrix):
+        user_cnt, item_cnt = rating_matrix.shape
+
+        pca = PCA(n_components=min(user_cnt, item_cnt, N_PCA_COMPONENTS))
+
+        ## PCA reduces the dimensionality of min(# rows, # cols)
+        ## As ratings data is likely to have more cols (items) than rows (users),
+        ## we check the size and transpose if # rows < # cols
+
+        if user_cnt <= item_cnt:
+            curr_rating_matrix_transposed = rating_matrix.transpose()
+            pca.fit(curr_rating_matrix_transposed)
+            return pca.components_.transpose()
+        else:
+            pca.fit(rating_matrix)
+            return pca.components_
+
+    def _return_best_k_means_model_fitted_based_on_elbow_method(self, curr_rating_matrix, user_cnt):
+
+        # find the desirable number of clusters
+        # limiting between 2 to smaller number between (total number of unique users - 1) / 2 or 7
+        # as too many clusters make it harder to choose an option among them
+        K = range(1, min(int(user_cnt / 2) + 1, MAXIMUM_CANDIDATES + 1))
+
+        kmeanModels = []
+        inertias = []
+
+        for k in K:
+            kmeanModel = KMeans(n_clusters=k)
+            kmeanModel.fit(curr_rating_matrix)
+
+            # keeping the current model until we know the desirable k
+            kmeanModels.append(kmeanModel)
+
+            # Inertia is the sum of the squared distances of *samples* to their closest cluster center
+            inertia = kmeanModel.inertia_
+            inertias.append(inertia)
+
+        desirable_k = None
+
+        # we look for the *elbow* here
+        # elbow is the number of clusters
+        # where the linearly decreasing inertia starts to decrease slower than the previous numbers
+        for idx in range(0, len(inertias)):
+            # excluding 1 cluster at idx 0 because 1 will make the hierarchical clustering infinite
+            if idx == 0:
+                pass
+            # if there's no elbow at last, return the last idx
+            elif idx == len(inertias) - 1:
+                desirable_k = idx + 1
+            elif inertias[idx - 1] - inertias[idx] > inertias[idx] - inertias[idx + 1]:
+                desirable_k = idx + 1
+
+        return kmeanModels[desirable_k - 1]
+
     def _build_child_clusters(self, curr_cluster: UserCluster, elbow_method: bool = False):
 
         # run k-means clusters based on elbow method
@@ -107,51 +160,18 @@ class HierarchicalCluster:
 
         else:
             if elbow_method:
-                # find the desirable number of clusters
-                # limiting between 2 to smaller number between (total number of unique users - 1) / 2 or 7
-                # as too many clusters make it harder to choose an option among them
-                K = range(1, min(int(unique_user_cnt / 2) + 1, MAXIMUM_CANDIDATES + 1))
-
-                kmeanModels = []
-                inertias = []
-
-                for k in K:
-                    kmeanModel = KMeans(n_clusters=k)
-                    kmeanModel.fit(curr_rating_matrix)
-
-                    # keeping the current model until we know the desirable k
-                    kmeanModels.append(kmeanModel)
-
-                    # Inertia is the sum of the squared distances of *samples* to their closest cluster center
-                    inertia = kmeanModel.inertia_
-                    inertias.append(inertia)
-
-                desirable_k = None
-
-                # we look for the *elbow* here
-                # elbow is the number of clusters
-                # where the linearly decreasing inertia starts to decrease slower than the previous numbers
-                for idx in range(0, len(inertias)):
-                    # excluding 1 cluster at idx 0 because 1 will make the hierarchical clustering infinite
-                    if idx == 0:
-                        pass
-                    # if there's no elbow at last, return the last idx
-                    elif idx == len(inertias) - 1:
-                        desirable_k = idx + 1
-                    elif inertias[idx - 1] - inertias[idx] > inertias[idx] - inertias[idx + 1]:
-                        desirable_k = idx + 1
-
-                best_k_means = kmeanModels[desirable_k - 1]
+                best_k_means = self._return_best_k_means_model_fitted_based_on_elbow_method(curr_rating_matrix, unique_user_cnt)
 
             else:
                 ## without PCA:
                 # best_k_means = KMeans(n_clusters=MAXIMUM_CANDIDATES)
 
+                ## We assume that the values are standardized, because the rating valuees are bewteen 0 and 5
                 ## with PCA:
-                pca = PCA(n_components=MAXIMUM_CANDIDATES).fit(curr_rating_matrix)
+                compressed_matrix = self._reduce_dimensionality(curr_rating_matrix)
 
-                best_k_means = KMeans(init=pca.components_, n_clusters=MAXIMUM_CANDIDATES)
-                best_k_means.fit(curr_rating_matrix)
+                best_k_means = KMeans(n_clusters=MAXIMUM_CANDIDATES)
+                best_k_means.fit(compressed_matrix)
 
         curr_rating_matrix['labels'] = best_k_means.labels_
 
