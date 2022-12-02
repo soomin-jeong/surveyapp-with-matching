@@ -132,11 +132,28 @@ class FavoriteItemStrategyTestSampleData(unittest.TestCase):
         assert matched_cluster.user_ids == [414]
 
 
-class ManiacItemsStrategyTestSampleData(unittest.TestCase):
+class ManiacItemsStrategyTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        cls.maniac_strategy = s_maniac('movielens_small')
+        cls.maniac_strategy = s_maniac('test2')
 
+    def test_first_clustering(self):
+        root_cluster = self.maniac_strategy.clustering.root_cluster
+        first_child_clusters = [each.user_ids for each in root_cluster.child_clusters]
+        assert [219, 412] in first_child_clusters and \
+            [297, 298, 459, 477] in first_child_clusters
 
+    def test_maniac_strategy_picks_items_rated_the_most_drastic(self):
+        # [219, 412] cluster's maniac choice: item 1084
+        # [297, 298, 459, 477] cluster's maniac choice: 5618
 
+        root_cluster = self.maniac_strategy.clustering.root_cluster
+
+        if root_cluster.child_clusters[0].user_ids == [219, 412]:
+            child_cluster1, child_cluster2 = root_cluster.child_clusters[0], root_cluster.child_clusters[1]
+        else:
+            child_cluster1, child_cluster2 = root_cluster.child_clusters[1], root_cluster.child_clusters[0]
+
+        assert child_cluster1.rep_item == 1084
+        assert child_cluster2.rep_item == 1262
