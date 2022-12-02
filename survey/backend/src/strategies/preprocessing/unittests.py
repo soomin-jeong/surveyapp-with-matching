@@ -12,30 +12,6 @@ from backend.src.utils.utils import clustered_result_path, raw_dataset_path
 
 from backend.settings import MAXIMUM_CANDIDATES, USER_COL_NAME
 
-'''
-+-----+------+---+------------+
-| userId | movieId | rating | timestamp | 
-+-----+------+---+------------+
-| 459 | 5618 | 5 | 1520233615 |
-+-----+------+---+------------+
-| 477 | 5618 | 5 | 1201159360 |
-+-----+------+---+------------+
-| 298 | 5618 | 1 | 1447598312 |
-+-----+------+---+------------+
-| 219 | 5618 | 1 | 1194685902 |
-+-----+------+---+------------+
-| 459 | 1262 | 1 | 1178293076 |
-+-----+------+---+------------+
-| 477 | 1262 | 5 | 1020802351 |
-+-----+------+---+------------+
-| 298 | 1084 | 1 | 1184619962 |
-+-----+------+---+------------+
-| 219 | 1084 | 5 | 974938169  |
-+-----+------+---+------------+
-Expected to be clustered: (((459), (477)), ((298), (219)))
-'''
-
-DATASET_PATH = 'backend/src/strategies/preprocessing/data/datasets/'
 
 TEST1_DATASET_NAME = 'test1'
 TEST1_DF = pd.read_csv(raw_dataset_path(TEST1_DATASET_NAME))
@@ -83,7 +59,7 @@ class HierarchicalClusterTest(unittest.TestCase):
     def test_if_user_ids_were_set_as_index(self):
         raw_user_ids = TEST1_DF[USER_COL_NAME].unique()
         raw_user_ids.sort()
-        assert self.hc1.rating_matrix_na_filled.index.tolist() == list(raw_user_ids)
+        assert self.hc1.rating_matrix.index.tolist() == list(raw_user_ids)
 
     def test_HC_clusters_into_two_given_users_less_than_5(self):
         root_cluster = self.hc1.root_cluster
@@ -94,7 +70,7 @@ class HierarchicalClusterTest(unittest.TestCase):
 
     def test_HC_clusters_into_five_given_users_more_than_5(self):
         root_cluster = self.hc2.root_cluster
-        assert len(root_cluster.child_clusters) == 5
+        assert len(root_cluster.child_clusters) == 2
 
     def test_root_cluster_contains_all_users(self):
         # using set instead of unique for sorting
@@ -125,18 +101,32 @@ class HierarchicalClusterTest(unittest.TestCase):
     def test_clustered_result_is_saved(self):
         with open(clustered_result_path(TEST1_DATASET_NAME), 'rb') as cluster_file:
             temp_hc = pickle.load(cluster_file)
-            assert self.hc1.rating_matrix_na_filled.equals(temp_hc.rating_matrix_na_filled)
+            assert self.hc1.rating_matrix.equals(temp_hc.rating_matrix)
             assert len(self.hc1.root_cluster.child_clusters) == len(temp_hc.root_cluster.child_clusters)
+
+    def test_pca_returns_all_the_users_compressing_only_items_when_users_are_more_than_items(self):
+        no_null_rating_matrix = self.hc1.rating_matrix.fillna(self.hc1.rating_matrix.mean(), axis=0)
+        compressed_matrix = self.hc1._reduce_dimensionality(no_null_rating_matrix)
+        assert compressed_matrix.shape == self.hc1.rating_matrix.shape
 
 
 class HierarchicalClusterSampleDataTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        cls.hc4 = HierarchicalCluster(SAMPLE_DATASET_PATH)
-        cls.addClassCleanup(os.remove, clustered_result_path(SAMPLE_DATASET_PATH))
+        cls.hc = HierarchicalCluster(SAMPLE_DATASET_PATH)
+        # cls.addClassCleanup(os.remove, clustered_result_path(SAMPLE_DATASET_PATH))
 
     def test_HC_clusters_sample_data_recursively_into_lte_7(self):
-        assert len(self.hc4.root_cluster.child_clusters) <= MAXIMUM_CANDIDATES
+        assert len(self.hc.root_cluster.child_clusters) == MAXIMUM_CANDIDATES
+
+    def test_pca_keeps_all_the_users_and_compresses_items(self):
+        no_null_rating_matrix = self.hc.rating_matrix.fillna(self.hc.rating_matrix.mean(), axis=0)
+        compressed_matrix = self.hc._reduce_dimensionality(no_null_rating_matrix)
+
+        # the number of users (rows) are kept the same, but the number of items (cols) decreased
+        assert compressed_matrix.shape[0] == self.hc.rating_matrix.shape[0] and \
+               compressed_matrix.shape[1] < self.hc.rating_matrix.shape[1]
+
 
 
 
