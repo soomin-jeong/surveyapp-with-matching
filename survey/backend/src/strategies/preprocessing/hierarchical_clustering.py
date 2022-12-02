@@ -85,22 +85,18 @@ class HierarchicalCluster:
     def _reduce_dimensionality(self, rating_matrix):
         user_cnt, item_cnt = rating_matrix.shape
 
-        pca = PCA(n_components=min(user_cnt, item_cnt, N_PCA_COMPONENTS))
+        pca = PCA(n_components=N_PCA_COMPONENTS)
 
-        ## PCA reduces the dimensionality of min(# rows, # cols)
-        ## As ratings data is likely to have more cols (items) than rows (users),
-        ## we check the size and transpose if # rows < # cols
+        # when there are more rows than columns, it simply returns the original matrix
+        # because PCA reduces the dimensionality of features by projecting the data to the eigenvalue of covariance matrix
+        if user_cnt > item_cnt:
+            return rating_matrix
 
-        if user_cnt <= item_cnt:
-            curr_rating_matrix_transposed = rating_matrix.transpose()
-            pca.fit(curr_rating_matrix_transposed)
-            return pca.components_.transpose()
         else:
-            pca.fit(rating_matrix)
-            return pca.components_
+            pca.fit(rating_matrix.transpose())
+            return pca.components_.transpose()
 
     def _return_best_k_means_model_fitted_based_on_elbow_method(self, curr_rating_matrix, user_cnt):
-
         # find the desirable number of clusters
         # limiting between 2 to smaller number between (total number of unique users - 1) / 2 or 7
         # as too many clusters make it harder to choose an option among them

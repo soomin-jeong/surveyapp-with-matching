@@ -12,4 +12,4 @@ RATING_COL_NAME = 'rating'
 MAXIMUM_CANDIDATES = 5
 
 # the number of components of PCA
-N_PCA_COMPONENTS = 10
+N_PCA_COMPONENTS = 100
