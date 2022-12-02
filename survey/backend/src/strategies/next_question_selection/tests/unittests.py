@@ -6,6 +6,8 @@ from backend.src.strategies.next_question_selection.implemented_strategies.rando
     Strategy as s_random
 from backend.src.strategies.next_question_selection.implemented_strategies.favorite_item_strategy import \
     Strategy as s_favorite
+from backend.src.strategies.next_question_selection.implemented_strategies.maniac_strategy import \
+    Strategy as s_maniac
 
 from backend.src.strategies.next_question_selection.user_cluster_with_representative_item import \
     get_cluster_matched_up_to_now
@@ -128,6 +130,13 @@ class FavoriteItemStrategyTestSampleData(unittest.TestCase):
         matched_cluster = get_cluster_matched_up_to_now(self.favorite_strategy.clustering.root_cluster, [1262])
         assert matched_cluster.user_cnt == 1
         assert matched_cluster.user_ids == [414]
+
+
+class ManiacItemsStrategyTestSampleData(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.maniac_strategy = s_maniac('movielens_small')
 
 
 
