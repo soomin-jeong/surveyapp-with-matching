@@ -104,7 +104,7 @@ class FavoriteItemStrategyTest(unittest.TestCase):
     def test_favorite_strategy_reaches_the_cluster_with_one_user(self):
         matched_curr = get_cluster_matched_up_to_now(self.favorite_strategy.clustering.root_cluster,
                                                      [5618, 1262, 1984])
-        assert matched_curr.user_ids == [298]
+        self.assertEqual(matched_curr.user_ids, [298])
 
 
 class FavoriteItemStrategyTestSampleData(unittest.TestCase):
@@ -118,18 +118,19 @@ class FavoriteItemStrategyTestSampleData(unittest.TestCase):
 
         # favorite items of the fist level of hierarchy:
         question_candidates_of_root = [each_child.rep_item for each_child in root_cluster.child_clusters]
-        assert set(question_candidates_of_root) == {31364, 171749, 8235, 1262, 3096}
+        self.assertSetEqual(set(question_candidates_of_root), {31364, 171749, 8235, 1262, 3096})
 
-        assert self.favorite_strategy.get_next_items("[31364]") == [1719, 8917, 166461, 97225, 55721]
-        assert get_cluster_matched_up_to_now(self.favorite_strategy.clustering.root_cluster,
-                                             [31364]).user_cnt == 477
+        self.assertEqual(self.favorite_strategy.get_next_items("[31364]"), [1719, 8917, 166461, 97225, 55721])
+        matched_users_with_given_choices = get_cluster_matched_up_to_now(self.favorite_strategy.clustering.root_cluster,
+                                             [31364]).user_cnt
+        self.assertEqual(matched_users_with_given_choices, 477)
 
     def test_favorite_strategy_reaches_a_cluster_with_one_user(self):
-        assert not self.favorite_strategy.has_next("[1262]")
-        assert self.favorite_strategy.get_next_items("[1262]") == []
+        self.assertFalse(self.favorite_strategy.has_next("[1262]"))
+        self.assertEqual(self.favorite_strategy.get_next_items("[1262]"), [])
         matched_cluster = get_cluster_matched_up_to_now(self.favorite_strategy.clustering.root_cluster, [1262])
-        assert matched_cluster.user_cnt == 1
-        assert matched_cluster.user_ids == [414]
+        self.assertEqual(matched_cluster.user_cnt, 1)
+        self.assertEqual(matched_cluster.user_ids, [414])
 
 
 class ManiacItemsStrategyTest(unittest.TestCase):
@@ -141,8 +142,8 @@ class ManiacItemsStrategyTest(unittest.TestCase):
     def test_first_clustering(self):
         root_cluster = self.maniac_strategy.clustering.root_cluster
         first_child_clusters = [each.user_ids for each in root_cluster.child_clusters]
-        assert [219, 412] in first_child_clusters and \
-            [297, 298, 459, 477] in first_child_clusters
+        self.assertIn([219, 412], first_child_clusters)
+        self.assertIn([297, 298, 459, 477], first_child_clusters)
 
     def test_maniac_strategy_picks_items_rated_the_most_drastic(self):
         # [219, 412] cluster's maniac choice: item 1084
@@ -155,5 +156,5 @@ class ManiacItemsStrategyTest(unittest.TestCase):
         else:
             child_cluster1, child_cluster2 = root_cluster.child_clusters[1], root_cluster.child_clusters[0]
 
-        assert child_cluster1.rep_item == 1084
-        assert child_cluster2.rep_item == 1262
+        self.assertEqual(child_cluster1.rep_item, 1084)
+        self.assertEqual(child_cluster2.rep_item, 1262)

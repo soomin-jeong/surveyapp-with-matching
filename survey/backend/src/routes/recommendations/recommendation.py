@@ -50,7 +50,7 @@ def handle_recommendations():
         strategy_class_instance = strategy_class_obj(rating_df)
 
         try:
-            matched_offline_user_id = strategy_class_instance.get_matched_offline_user(current_ratings)
+            matched_offline_user_id = strategy_class_instance.get_matched_offline_user_id(current_ratings)
             return send_recommendations(token, matched_offline_user_id, rel_reclist_files)
         except Exception as e:
             print(f"Unexpected error from send_recommendation in /recommendation")
