@@ -4,7 +4,7 @@ from ...preprocessing.hierarchical_clustering import UserCluster
 from abc import abstractmethod, ABCMeta
 
 
-class MatchmakingBase(metaclass=ABCMeta):
+class BaseStrategy(metaclass=ABCMeta):
 
     def __init__(self, matched_cluster: UserCluster, rating_matrix: pd.DataFrame, online_user_rating: dict):
         self.matched_cluster = matched_cluster
