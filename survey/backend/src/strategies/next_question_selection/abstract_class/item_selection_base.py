@@ -54,7 +54,7 @@ class BaseStrategy(metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def add_representative_items_to_children(self, parent_cluster: UserCluster):
-        raise NotImplementedError("{} should be implemented".format(self.__class__.__name__))
+        raise NotImplementedError("{}.{} should be implemented".format(self.__class__.__name__, self.__module__.__name__))
 
     @abc.abstractmethod
     def has_next(self, *args, **kwargs) -> bool:
@@ -64,4 +64,4 @@ class BaseStrategy(metaclass=abc.ABCMeta):
         where the cluster has only one user in it.
         In this case, regardless of the matching strategy, the offline user should be matched with the online user
         """
-        raise NotImplementedError("{} should be implemented".format(self.__class__.__name__))
+        raise NotImplementedError("{}.{} should be implemented".format(self.__class__.__name__, self.__module__.__name__))
