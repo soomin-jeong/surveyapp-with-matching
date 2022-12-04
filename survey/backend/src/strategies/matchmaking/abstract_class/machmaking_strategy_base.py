@@ -6,7 +6,7 @@ from abc import abstractmethod, ABCMeta
 
 
 class MatchmakingBase(metaclass=ABCMeta):
-    @abstractmethod
+
     def __init__(self, matched_cluster: UserCluster):
         self.matched_cluster = matched_cluster
 
