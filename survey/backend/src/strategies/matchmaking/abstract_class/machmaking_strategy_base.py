@@ -6,9 +6,10 @@ from abc import abstractmethod, ABCMeta
 
 class MatchmakingBase(metaclass=ABCMeta):
 
-    def __init__(self, matched_cluster: UserCluster, online_user_rating: dict):
+    def __init__(self, matched_cluster: UserCluster, rating_matrix: pd.DataFrame, online_user_rating: dict):
         self.matched_cluster = matched_cluster
-        self.online_user_id = online_user_rating
+        self.rating_matrix = rating_matrix
+        self.online_user_rating = online_user_rating
 
     def get_matched_offline_user_id(self) -> int:
         # when there is only one user in the cluster, match with the user right away
