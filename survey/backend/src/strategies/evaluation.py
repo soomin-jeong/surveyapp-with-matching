@@ -54,17 +54,15 @@ class EvaluationOfStrategies:
 
         for n in range(self.n_times):
 
-            # TODO: Dummy
-            user_cluster = UserCluster()
-            user_cluster.user_ids = [459, 477]
+            h_clustering = HierarchicalCluster(self.dataset_name)
+            root_cluster = h_clustering.root_cluster
 
-            online_user_id = self._pick_online_user_id(user_cluster)
+            online_user_id = self._pick_online_user_id(root_cluster)
             offline_user_id = self.find_offline_user_id_matching(online_user_id)
             if online_user_id == offline_user_id:
                 hit_times += 1
 
         return hit_times / self.n_times
-
 
 
 ev = EvaluationOfStrategies(100, 'test2')
