@@ -6,7 +6,7 @@ from abc import abstractmethod, ABCMeta
 
 class BaseStrategy(metaclass=ABCMeta):
 
-    def __init__(self, matched_cluster: UserCluster, rating_matrix: pd.DataFrame, online_user_rating: dict):
+    def __init__(self, matched_cluster: UserCluster, rating_matrix: pd.DataFrame, online_user_rating: [int]):
         self.matched_cluster = matched_cluster
         self.rating_matrix = rating_matrix
         self.online_user_rating = online_user_rating

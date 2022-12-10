@@ -46,7 +46,6 @@ class BaseStrategy(metaclass=abc.ABCMeta):
         with open(strategy_result_path(strategy_name, dataset_name), 'wb') as strategy_file_w:
             pickle.dump(self, strategy_file_w)
 
-
     def add_representative_item_to_user_clusters_in_hc(self, curr_cluster: UserCluster):
         self.add_representative_items_to_children(curr_cluster)
         for each_child_cluster in curr_cluster.child_clusters:

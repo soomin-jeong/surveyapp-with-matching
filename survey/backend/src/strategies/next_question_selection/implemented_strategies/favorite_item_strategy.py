@@ -54,6 +54,28 @@ class Strategy(BaseStrategyChoice):
             return [each_child.rep_item for each_child in curr_cluster.child_clusters]
         else:
             return []
+
+    def simulate_online_user_response(self, online_user_id: int, candidate_item_ids: [int]):
+        # if there is no item or only one item
+        if len(candidate_item_ids) <= 1:
+            raise Exception('There should be at least 2 items in `candidate_item_ids` for this method')
+
+        ratings_by_online_user = self.clustering.rating_matrix.loc[[online_user_id]]
+
+        # giving the default value as low as possible
+        highest_rated_item_id = None
+        highest_rating_so_far = - float('inf')
+
+        # pick the item with highest rating by an online user
+        for each_item_id in candidate_item_ids:
+            rating = ratings_by_online_user[each_item_id].values[0]
+            if rating and rating > highest_rating_so_far:
+               highest_rated_item_id = each_item_id
+
+        return int(highest_rated_item_id)
+
+
+
     
 
 
