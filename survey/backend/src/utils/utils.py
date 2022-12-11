@@ -93,3 +93,6 @@ def convert_current_ratings_str_into_list(current_ratings_str: str) -> [int]:
         return [int(each) for each in current_ratings_str[1:-1].split(',')]
 
 
+class abstract_attribute(object):
+    def __get__(self, obj, type):
+        raise NotImplementedError("This attribute was not set in a subclass")

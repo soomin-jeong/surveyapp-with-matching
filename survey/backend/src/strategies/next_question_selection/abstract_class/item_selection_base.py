@@ -6,12 +6,7 @@ import pickle
 from backend.src.strategies.preprocessing.hierarchical_clustering import HierarchicalCluster
 from backend.src.strategies.preprocessing.hierarchical_clustering import UserCluster
 
-from backend.src.utils.utils import strategy_result_path
-
-
-class abstract_attribute(object):
-    def __get__(self, obj, type):
-        raise NotImplementedError("This attribute was not set in a subclass")
+from backend.src.utils.utils import strategy_result_path, abstract_attribute
 
 
 ## abstract SQLAlchemy Model class
@@ -45,7 +40,6 @@ class BaseStrategy(metaclass=abc.ABCMeta):
 
         with open(strategy_result_path(strategy_name, dataset_name), 'wb') as strategy_file_w:
             pickle.dump(self, strategy_file_w)
-
 
     def add_representative_item_to_user_clusters_in_hc(self, curr_cluster: UserCluster):
         self.add_representative_items_to_children(curr_cluster)

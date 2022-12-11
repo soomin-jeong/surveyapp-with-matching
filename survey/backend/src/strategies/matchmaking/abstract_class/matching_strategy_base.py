@@ -1,12 +1,15 @@
 import pandas as pd
 
-from ...preprocessing.hierarchical_clustering import UserCluster
+from backend.src.utils.utils import abstract_attribute
+from backend.src.strategies.preprocessing.hierarchical_clustering import UserCluster
 from abc import abstractmethod, ABCMeta
 
 
-class MatchmakingBase(metaclass=ABCMeta):
+class BaseStrategy(metaclass=ABCMeta):
+    # to force giving it a name ...
+    strategy_name = abstract_attribute()
 
-    def __init__(self, matched_cluster: UserCluster, rating_matrix: pd.DataFrame, online_user_rating: dict):
+    def __init__(self, matched_cluster: UserCluster, rating_matrix: pd.DataFrame, online_user_rating: [int]):
         self.matched_cluster = matched_cluster
         self.rating_matrix = rating_matrix
         self.online_user_rating = online_user_rating

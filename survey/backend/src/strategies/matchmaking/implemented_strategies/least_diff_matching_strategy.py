@@ -1,27 +1,28 @@
 
 import pandas as pd
 
-from backend.src.strategies.matchmaking.abstract_class.machmaking_strategy_base import MatchmakingBase
+from backend.src.strategies.matchmaking.abstract_class.matching_strategy_base import BaseStrategy
 
 SQAURED_DIFF_COL_NAME = 'squared_diff'
 
 
-def deduct_by_online_user_ratings(ratings_by_matched_cluster: pd.DataFrame, online_user_rating: dict):
+def deduct_by_online_user_ratings(ratings_by_matched_cluster: pd.DataFrame, online_user_id: int, online_user_ratings: [int]):
     ratings_by_matched_cluster = ratings_by_matched_cluster.fillna(-1)
     ratings_by_matched_cluster[SQAURED_DIFF_COL_NAME] = 0
 
-    for each_item_id in online_user_rating.keys():
+    for each_item_id in online_user_ratings:
 
-        # defending cases where the items that the online user rated does not exist
+        # defensive code where the items that the online user rated does not exist
         # in the ratings of the offline users
         if each_item_id in ratings_by_matched_cluster.columns:
-            rating_diff = ratings_by_matched_cluster[each_item_id] - online_user_rating.get(each_item_id)
+            rating_diff = ratings_by_matched_cluster[each_item_id] - online_user_ratings.get(each_item_id)
             ratings_by_matched_cluster[SQAURED_DIFF_COL_NAME] += pow(rating_diff, 2)
 
     return ratings_by_matched_cluster
 
 
-class Strategy(MatchmakingBase):
+class Strategy(BaseStrategy):
+    strategy_name = 'least_diff'
 
     def get_matched_user_id_among_multiple_in_cluster(self) -> int:
         ratings_by_matched_cluster = self.rating_matrix.filter(items=self.matched_cluster.user_ids, axis=0)
