@@ -65,5 +65,5 @@ class EvaluationOfStrategies:
         return hit_times / self.n_times
 
 
-ev = EvaluationOfStrategies(100, 'test2')
+ev = EvaluationOfStrategies(100, 'movielens_small')
 print(ev.get_hit_ratio_of_combination_of_questioning_and_matchmaking_strategy())

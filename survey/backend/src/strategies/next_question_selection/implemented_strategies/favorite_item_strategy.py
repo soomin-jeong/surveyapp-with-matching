@@ -55,7 +55,7 @@ class Strategy(BaseStrategyChoice):
         else:
             return []
 
-    def simulate_online_user_response(self, online_user_id: int, candidate_item_ids: [int]):
+    def simulate_online_user_response(self, online_user_id: int, candidate_item_ids: [int]) -> int:
         # if there is no item or only one item
         if len(candidate_item_ids) <= 1:
             raise Exception('There should be at least 2 items in `candidate_item_ids` for this method')
@@ -71,6 +71,9 @@ class Strategy(BaseStrategyChoice):
             rating = ratings_by_online_user[each_item_id].values[0]
             if rating and rating > highest_rating_so_far:
                highest_rated_item_id = each_item_id
+
+        if highest_rated_item_id is None:
+            return candidate_item_ids[0]
 
         return int(highest_rated_item_id)
 
