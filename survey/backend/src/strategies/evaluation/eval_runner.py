@@ -1,3 +1,5 @@
+import time
+
 from backend.src.strategies.evaluation.evaluation import EvaluationOfStrategies
 from backend.src.strategies.next_question_selection.implemented_strategies.favorite_item_strategy import \
             Strategy as questioning_favorite
@@ -5,6 +7,8 @@ from backend.src.strategies.next_question_selection.implemented_strategies.rando
             Strategy as questioning_random
 from backend.src.strategies.next_question_selection.implemented_strategies.maniac_strategy import \
             Strategy as questioning_maniac
+from backend.src.strategies.next_question_selection.implemented_strategies.rated_by_the_most_strategy import \
+            Strategy as questioning_rated_most
 
 from backend.src.strategies.matchmaking.implemented_strategies.random_matchmaking_strategy import \
             Strategy as matching_random
@@ -12,52 +16,27 @@ from backend.src.strategies.matchmaking.implemented_strategies.least_diff_matchi
             Strategy as matching_least_diff
 
 
-# test_dataset_name = 'test2'
+def print_result(dataset_name, repeating_times, questioning_strategies, matching_strategies):
+    print("## EVALUATION with dataset [{}] repeating [{}] times".format(dataset_name, repeating_times))
+
+    for each_questioning_strategy in questioning_strategies:
+        for each_matching_strategy in matching_strategies:
+            start = time.time()
+            ev = EvaluationOfStrategies(dataset_name, each_questioning_strategy, each_matching_strategy)
+            hit_ratio = ev.get_hit_ratio_of_combination_of_questioning_and_matchmaking_strategy(
+                repeating_times=repeating_times)
+            end = time.time()
+            print("Hit Rate (questioning={}, matching={}): \t{} (in {}s)".format(each_questioning_strategy.strategy_name,
+                                                                                 each_matching_strategy.strategy_name,
+                                                                                 hit_ratio,
+                                                                                 round(end-start, 5)))
+
+
 test_dataset_name = 'movielens_small'
+test_repeating_times = 10000
 
-test_repeating_times = 1000
+questioning_strategies = [questioning_random, questioning_favorite, questioning_rated_most, questioning_maniac]
+matching_strategies = [matching_random]
 
-# ev = EvaluationOfStrategies(test_dataset_name, questioning_favorite, matching_least_diff)
-# ratio = ev.get_hit_ratio_of_combination_of_questioning_and_matchmaking_strategy(repeating_times=test_repeating_times)
-# print("RESULT(dataset={}, n_repeating_times={}, questioning={}, matching={}): \t{}".format(test_dataset_name,
-#                                                                                            test_repeating_times,
-#                                                                                          questioning_favorite.strategy_name,
-#                                                                                          matching_least_diff.strategy_name,
-#                                                                                          ratio))
-#
-# ev2 = EvaluationOfStrategies(test_dataset_name, questioning_random, matching_least_diff)
-# ratio = ev.get_hit_ratio_of_combination_of_questioning_and_matchmaking_strategy(repeating_times=test_repeating_times)
-# print("RESULT(dataset={}, n_repeating_times={}, questioning={}, matching={}): \t{}".format(test_dataset_name,
-#                                                                                test_repeating_times,
-#                                                                              questioning_random.strategy_name,
-#                                                                              matching_least_diff.strategy_name,
-#                                                                              ratio))
-
-
-
-ev = EvaluationOfStrategies(test_dataset_name, questioning_favorite, matching_random)
-ratio = ev.get_hit_ratio_of_combination_of_questioning_and_matchmaking_strategy(repeating_times=test_repeating_times)
-print("RESULT(dataset={}, n_repeating_times={}, questioning={}, matching={}): \t{}".format(test_dataset_name,
-                                                                                           test_repeating_times,
-                                                                                         questioning_favorite.strategy_name,
-                                                                                         matching_random.strategy_name,
-                                                                                         ratio))
-
-ev2 = EvaluationOfStrategies(test_dataset_name, questioning_random, matching_random)
-ratio = ev.get_hit_ratio_of_combination_of_questioning_and_matchmaking_strategy(repeating_times=test_repeating_times)
-print("RESULT(dataset={}, n_repeating_times={}, questioning={}, matching={}): \t{}".format(test_dataset_name,
-                                                                               test_repeating_times,
-                                                                             questioning_random.strategy_name,
-                                                                             matching_random.strategy_name,
-                                                                             ratio))
-
-
-ev = EvaluationOfStrategies(test_dataset_name, questioning_maniac, matching_random)
-ratio = ev.get_hit_ratio_of_combination_of_questioning_and_matchmaking_strategy(repeating_times=test_repeating_times)
-print("RESULT(dataset={}, n_repeating_times={}, questioning={}, matching={}): \t{}".format(test_dataset_name,
-                                                                                           test_repeating_times,
-                                                                                         questioning_maniac.strategy_name,
-                                                                                         matching_random.strategy_name,
-                                                                                         ratio))
-
+print_result(test_dataset_name, test_repeating_times, questioning_strategies, matching_strategies)
 

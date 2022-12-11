@@ -42,8 +42,9 @@ class EvaluationOfStrategies:
 
         while qs.has_next(choices_so_far_str):
             next_items = qs.get_next_items(choices_so_far_str)
-            online_user_response_item_id = qs.simulate_online_user_response(online_user_id,
-                                                                                                   next_items)
+            if next_items == []:
+                a = 1
+            online_user_response_item_id = qs.simulate_online_user_response(online_user_id, next_items)
             choices_so_far_str = self._add_new_response_to_str(choices_so_far_str, online_user_response_item_id)
 
         choices_so_far = convert_current_ratings_str_into_list(choices_so_far_str)

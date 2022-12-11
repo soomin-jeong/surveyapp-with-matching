@@ -13,7 +13,10 @@ class Strategy(BaseStrategyChoice):
 
     def has_next(self, choices_so_far_str: str) -> bool:
         choices_so_far = convert_current_ratings_str_into_list(choices_so_far_str)
-        return len(choices_so_far) < self.clustering.rating_matrix_na_filled.columns
+        curr_cluster = get_cluster_matched_up_to_now(self.clustering.root_cluster, choices_so_far)
+
+        # we can expect next item until we reach the cluster with only one user
+        return curr_cluster.user_cnt > 1
 
     def add_representative_items_to_children(self, parent_cluster: UserCluster):
         child_clusters_with_rep_item = []

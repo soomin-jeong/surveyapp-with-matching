@@ -1,3 +1,5 @@
+import pandas as pd
+
 from backend.src.strategies.next_question_selection.abstract_class.item_selection_base_choice import BaseStrategyChoice
 from backend.src.strategies.preprocessing.hierarchical_clustering import HierarchicalCluster
 from backend.src.strategies.preprocessing.hierarchical_clustering import UserCluster
@@ -29,14 +31,9 @@ class Strategy(BaseStrategyChoice):
             # this strategy regards an item rated the most times by the users in the cluster as the representative item
             # therefore, when there is only one item, there is no item rated the most times,
             # because every item is rated once or not at all
-            if each_child.user_cnt > 1:
-                rep_item = self._get_representative_item_of_cluster(each_child)
-                user_cluster_with_rep_item = UserClusterRep(each_child, rep_item)
-                child_clusters_with_rep_item.append(user_cluster_with_rep_item)
-            else:
-                # though the clusters with only one user should not contain a representative item,
-                # we are still adding it as we are overwriting the child clusters
-                child_clusters_with_rep_item.append(each_child)
+            rep_item = self._get_representative_item_of_cluster(each_child)
+            user_cluster_with_rep_item = UserClusterRep(each_child, rep_item)
+            child_clusters_with_rep_item.append(user_cluster_with_rep_item)
 
         parent_cluster.child_clusters = child_clusters_with_rep_item
 
@@ -49,15 +46,18 @@ class Strategy(BaseStrategyChoice):
         return curr_cluster.user_cnt > 2
 
     def _get_representative_item_of_cluster(self, cluster: UserCluster) -> int:
-
         # select item ratings by the users in each cluster in the data frame
         df_items_rated_by_the_cluster = self.clustering.rating_matrix.filter(items=cluster.user_ids, axis='rows')
 
-        # if the representative items are redundant, replace it with the next level
-        rating_cnt_per_item = df_items_rated_by_the_cluster.count()
+        if cluster.user_cnt >= 2:
+            # if the representative items are redundant, replace it with the next level
+            rating_cnt_per_item = df_items_rated_by_the_cluster.count()
 
-        # sort it ascending and pick the last one
-        return rating_cnt_per_item.sort_values().keys()[-1]
+            # sort it ascending and pick the last one
+            return rating_cnt_per_item.sort_values().keys()[-1]
+        else:
+            return df_items_rated_by_the_cluster.sort_values(by=cluster.user_ids[0], axis=1, ascending=False).keys()[0]
+
 
     def get_next_items(self, choices_so_far_str: str) -> [int]:
         choices_so_far = convert_current_ratings_str_into_list(choices_so_far_str)
@@ -65,6 +65,9 @@ class Strategy(BaseStrategyChoice):
         curr_cluster = get_cluster_matched_up_to_now(self.clustering.root_cluster, choices_so_far)
 
         if curr_cluster.user_cnt > 2:
+            for each_child in curr_cluster.child_clusters:
+                if not hasattr(each_child, 'rep_item'):
+                    a = 1
             # return the representative items of the child clusters of the matched cluster up to now
             return [each_child.rep_item for each_child in curr_cluster.child_clusters]
         else:
