@@ -1,7 +1,7 @@
 
 import pandas as pd
 
-from backend.src.strategies.matchmaking.abstract_class.machmaking_strategy_base import BaseStrategy
+from backend.src.strategies.matchmaking.abstract_class.matching_strategy_base import BaseStrategy
 
 SQAURED_DIFF_COL_NAME = 'squared_diff'
 
@@ -22,6 +22,7 @@ def deduct_by_online_user_ratings(ratings_by_matched_cluster: pd.DataFrame, onli
 
 
 class Strategy(BaseStrategy):
+    strategy_name = 'least_diff'
 
     def get_matched_user_id_among_multiple_in_cluster(self) -> int:
         ratings_by_matched_cluster = self.rating_matrix.filter(items=self.matched_cluster.user_ids, axis=0)

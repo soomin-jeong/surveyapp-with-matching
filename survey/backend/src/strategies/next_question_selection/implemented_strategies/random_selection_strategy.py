@@ -9,7 +9,7 @@ from backend.src.utils.utils import convert_current_ratings_str_into_list
 
 
 class Strategy(BaseStrategyChoice):
-    strategy_name = 'random'
+    strategy_name = 'random_item'
 
     def has_next(self, choices_so_far_str: str) -> bool:
         choices_so_far = convert_current_ratings_str_into_list(choices_so_far_str)
@@ -38,5 +38,9 @@ class Strategy(BaseStrategyChoice):
             return [each_child.rep_item for each_child in curr_cluster.child_clusters]
         else:
             return []
+
+    def simulate_online_user_response(self, online_user_id: int, candidate_item_ids: [int]) -> int:
+        return random.choice(candidate_item_ids)
+
 
 

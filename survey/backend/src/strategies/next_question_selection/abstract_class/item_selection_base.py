@@ -6,12 +6,7 @@ import pickle
 from backend.src.strategies.preprocessing.hierarchical_clustering import HierarchicalCluster
 from backend.src.strategies.preprocessing.hierarchical_clustering import UserCluster
 
-from backend.src.utils.utils import strategy_result_path
-
-
-class abstract_attribute(object):
-    def __get__(self, obj, type):
-        raise NotImplementedError("This attribute was not set in a subclass")
+from backend.src.utils.utils import strategy_result_path, abstract_attribute
 
 
 ## abstract SQLAlchemy Model class
