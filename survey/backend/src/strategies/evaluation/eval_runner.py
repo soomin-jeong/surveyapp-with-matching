@@ -33,7 +33,7 @@ def print_result(dataset_name, repeating_times, questioning_strategies, matching
 
 
 test_dataset_name = 'movielens_small'
-test_repeating_times = 10000
+test_repeating_times = 100000
 
 # USER GUIDE: add the  questioning strategies to evaluate here
 questioning_strategies = [questioning_random, questioning_favorite, questioning_rated_most, questioning_maniac]
