@@ -66,3 +66,4 @@ class EvaluationOfStrategies:
 
         return hit_times / repeating_times
 
+

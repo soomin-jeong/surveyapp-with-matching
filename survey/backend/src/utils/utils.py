@@ -93,6 +93,19 @@ def convert_current_ratings_str_into_list(current_ratings_str: str) -> [int]:
         return [int(each) for each in current_ratings_str[1:-1].split(',')]
 
 
+def convert_dat_file_to_csv_file_matching_requirements_for_strategies(dat_file_folder: str, dat_file_name: str):
+    """
+    This function converts DAT-formatted file from MovieLens into CSV-formatted file to match the requirements of strategies
+    Args:
+        dat_file_folder: Path to the .dat file (i.e. '/Users/hello/world/')
+        dat_file_name: name of the .dat file (i.e. 'ratings.dat')
+    """
+
+    dat_df = pd.read_csv(dat_file_folder + dat_file_name, sep='::', header=None)
+    dat_df.to_csv(dat_file_folder + 'ratings.csv', index_col=0)
+
+
 class abstract_attribute(object):
     def __get__(self, obj, type):
         raise NotImplementedError("This attribute was not set in a subclass")
+
