@@ -79,22 +79,22 @@ def print_t_test_result(dataset_name, questioning_strategies, sample_size, n_sam
             print(f'- Result: ACCEPT null hypothesis (p-value: {t_test_result.pvalue})\n')
 
 
-test_dataset_name = 'ml-1m'
-test_repeating_times = 100000
+test_dataset_name = 'ml-100k'
+test_repeating_times = 100
 
 # USER GUIDE: add the  questioning strategies to evaluate here
 questioning_strategies = [questioning_random, questioning_favorite, questioning_rated_most, questioning_maniac]
 # USER GUIDE: add the  matching strategies to evaluate here
 matching_strategies = [matching_random]
 
-# print_eval_result(test_dataset_name, test_repeating_times, questioning_strategies, matching_strategies)
+print_eval_result(test_dataset_name, test_repeating_times, questioning_strategies, matching_strategies)
 
 
 ## T-test
 SAMPLE_SIZE = 100
 N_SAMPLES = 200
 
-print_t_test_result(test_dataset_name, questioning_strategies, SAMPLE_SIZE, N_SAMPLES)
+# print_t_test_result(test_dataset_name, questioning_strategies, SAMPLE_SIZE, N_SAMPLES)
 
 
 

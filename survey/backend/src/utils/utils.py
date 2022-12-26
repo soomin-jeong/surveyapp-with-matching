@@ -101,8 +101,9 @@ def convert_dat_file_to_csv_file_matching_requirements_for_strategies(dat_file_f
         dat_file_name: name of the .dat file (i.e. 'ratings.dat')
     """
 
-    dat_df = pd.read_csv(dat_file_folder + dat_file_name, sep='::', header=None)
-    dat_df.to_csv(dat_file_folder + 'ratings.csv', index_col=0)
+    dat_df = pd.read_csv(dat_file_folder + dat_file_name, sep='\t', header=None)
+    dat_df = dat_df.rename(columns={0: 'userId', 1: 'movieId', 2: 'rating', 3: 'timestamp'})
+    dat_df.to_csv(dat_file_folder + 'ratings.csv', index=False)
 
 
 class abstract_attribute(object):
