@@ -87,14 +87,14 @@ questioning_strategies = [questioning_random, questioning_favorite, questioning_
 # USER GUIDE: add the  matching strategies to evaluate here
 matching_strategies = [matching_random]
 
-# print_eval_result(test_dataset_name, test_repeating_times, questioning_strategies, matching_strategies)
+print_eval_result(test_dataset_name, test_repeating_times, questioning_strategies, matching_strategies)
 
 
 ## T-test
 SAMPLE_SIZE = 100
-N_SAMPLES = 200
+N_SAMPLES = 100
 
-print_t_test_result(test_dataset_name, questioning_strategies, SAMPLE_SIZE, N_SAMPLES)
+# print_t_test_result(test_dataset_name, questioning_strategies, SAMPLE_SIZE, N_SAMPLES)
 
 
 
