@@ -20,7 +20,7 @@ from backend.src.strategies.matchmaking.implemented_strategies.least_diff_matchi
             Strategy as matching_least_diff
 
 
-def print_result(dataset_name, repeating_times, questioning_strategies, matching_strategies):
+def print_eval_result(dataset_name, repeating_times, questioning_strategies, matching_strategies):
     print("## EVALUATION with dataset [{}] repeating [{}] times".format(dataset_name, repeating_times))
 
     for each_questioning_strategy in questioning_strategies:
@@ -79,7 +79,7 @@ def print_t_test_result(dataset_name, questioning_strategies, sample_size, n_sam
             print(f'- Result: ACCEPT null hypothesis (p-value: {t_test_result.pvalue})\n')
 
 
-test_dataset_name = 'movielens_small'
+test_dataset_name = 'ml-1m'
 test_repeating_times = 100000
 
 # USER GUIDE: add the  questioning strategies to evaluate here
@@ -87,7 +87,7 @@ questioning_strategies = [questioning_random, questioning_favorite, questioning_
 # USER GUIDE: add the  matching strategies to evaluate here
 matching_strategies = [matching_random]
 
-# print_result(test_dataset_name, test_repeating_times, questioning_strategies, matching_strategies)
+# print_eval_result(test_dataset_name, test_repeating_times, questioning_strategies, matching_strategies)
 
 
 ## T-test
