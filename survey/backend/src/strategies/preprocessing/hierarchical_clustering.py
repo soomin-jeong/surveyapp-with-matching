@@ -85,7 +85,7 @@ class HierarchicalCluster:
     def _reduce_dimensionality(self, rating_matrix):
         user_cnt, item_cnt = rating_matrix.shape
 
-        pca = PCA(n_components=N_PCA_COMPONENTS)
+        pca = PCA(n_components=min(N_PCA_COMPONENTS, user_cnt, item_cnt))
 
         # when there are more rows than columns, it simply returns the original matrix
         # because PCA reduces the dimensionality of features by projecting the data to the eigenvalue of covariance matrix
