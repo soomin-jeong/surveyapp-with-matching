@@ -1,0 +1,19 @@
+## T-test result of [random_item] (sample_size=100, n_samples=100)
+- Avg hit ratio of ctrl strategy: 0.002
+- Avg hit ratio of test strategy: 0.002
+- Result: ACCEPT null hypothesis (p-value: 0.5087160740276482)
+
+## T-test result of [favorite_item] (sample_size=100, n_samples=100)
+- Avg hit ratio of ctrl strategy: 0.002
+- Avg hit ratio of test strategy: 0.003
+- Result: ACCEPT null hypothesis (p-value: 0.23924839083142949)
+
+## T-test result of [rated_by_the_most] (sample_size=100, n_samples=100)
+- Avg hit ratio of ctrl strategy: 0.002
+- Avg hit ratio of test strategy: 0.005
+- Result: REJECT null hypothesis (p-value: 0.0003883043530737662)
+
+## T-test result of [maniac] (sample_size=100, n_samples=100)
+- Avg hit ratio of ctrl strategy: 0.002
+- Avg hit ratio of test strategy: 0.02
+- Result: REJECT null hypothesis (p-value: 4.698996397648275e-31)

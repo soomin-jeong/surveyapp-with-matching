@@ -13,7 +13,6 @@ survey/backend/data/survey_database.db
 
 # files generated while receiving the results
 survey/backend/data/results/online_eval/*.csv
-survey/backend/data/clustered_results/**
 survey/backend/data/strategy_rep_items/**
 
 # environmental variables to be kept safe
