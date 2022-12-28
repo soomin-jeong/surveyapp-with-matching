@@ -93,7 +93,7 @@ matching_strategies = [matching_random, matching_least_diff]
 
 ## T-test
 SAMPLE_SIZE = 100
-N_SAMPLES = 1000
+N_SAMPLES = 100
 
 # print_t_test_result(test_dataset_name, matching_strategies, questioning_strategies, SAMPLE_SIZE, N_SAMPLES)
 print_t_test_result(test_dataset_name, matching_strategies, [questioning_rated_most], SAMPLE_SIZE, N_SAMPLES)

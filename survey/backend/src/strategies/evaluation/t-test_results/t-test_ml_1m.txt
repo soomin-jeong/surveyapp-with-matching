@@ -20,3 +20,12 @@
 
 ---
 
+## T-test result of [q=rated_by_the_most, m=random] (sample_size=100, n_samples=100)
+- Avg hit ratio of ctrl strategy: 0.0
+- Avg hit ratio of test strategy: 0.0
+- Result: ACCEPT null hypothesis (p-value: 0.4096329908519074)
+
+## T-test result of [q=rated_by_the_most, m=least_diff] (sample_size=100, n_samples=100)
+- Avg hit ratio of ctrl strategy: 0.0
+- Avg hit ratio of test strategy: 0.0
+- Result: ACCEPT null hypothesis (p-value: 0.4096329908519074)
