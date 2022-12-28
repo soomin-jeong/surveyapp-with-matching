@@ -11,5 +11,9 @@ RATING_COL_NAME = 'rating'
 # for example, if this constant is 5, users will see at most 5 options to choose among at each question.
 MAXIMUM_CANDIDATES = 5
 
+# maximum value of rating
+MAX_RATING = 5
+MIN_RATING = 0
+
 # the number of components of PCA
 N_PCA_COMPONENTS = 100
