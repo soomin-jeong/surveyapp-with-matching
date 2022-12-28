@@ -34,9 +34,10 @@ def print_eval_result(dataset_name, repeating_times, questioning_strategies, mat
                                                                                  each_matching_strategy.strategy_name,
                                                                                  hit_ratio,
                                                                                  round(end-start, 5)))
+    print("")
 
 
-def print_t_test_result(dataset_name, questioning_strategies, sample_size, n_samples):
+def print_t_test_result(dataset_name, matching_strategies, questioning_strategies, sample_size, n_samples):
     '''
 
     Returns:
@@ -56,36 +57,36 @@ def print_t_test_result(dataset_name, questioning_strategies, sample_size, n_sam
 
         return hit_ratio_samples
 
-    BASE_MATCHING_STRATEGY = matching_random
-    CONTROL_GROUP_QUESTIONING_STRATEGY = questioning_random
+    CONTROL_MATCHING_STRATEGY = matching_random
+    CONTROL_QUESTIONING_STRATEGY = questioning_random
 
-    control_hit_ratios = collect_hit_ratio(dataset_name, CONTROL_GROUP_QUESTIONING_STRATEGY,
-                                           BASE_MATCHING_STRATEGY, sample_size, n_samples)
+    control_hit_ratios = collect_hit_ratio(dataset_name, CONTROL_QUESTIONING_STRATEGY,
+                                           CONTROL_MATCHING_STRATEGY, sample_size, n_samples)
 
-    for each_q_strategy in questioning_strategies:
-        test_hit_ratios = collect_hit_ratio(dataset_name, each_q_strategy,
-                                            BASE_MATCHING_STRATEGY, sample_size, n_samples)
+    for each_m_strategy in matching_strategies:
+        for each_q_strategy in questioning_strategies:
+            test_hit_ratios = collect_hit_ratio(dataset_name, each_q_strategy, each_m_strategy, sample_size, n_samples)
 
-        t_test_result = stats.ttest_ind(a=control_hit_ratios, b=test_hit_ratios, equal_var=True)
-        print(
-            f'## T-test result of [{each_q_strategy.strategy_name}] (sample_size={sample_size}, n_samples={n_samples})')
+            t_test_result = stats.ttest_ind(a=control_hit_ratios, b=test_hit_ratios, equal_var=True)
+            print(
+                f'## T-test result of [q={each_q_strategy.strategy_name}, m={each_m_strategy.strategy_name}] (sample_size={sample_size}, n_samples={n_samples})')
 
-        print(f'- Avg hit ratio of ctrl strategy: {round(sum(control_hit_ratios) / len(control_hit_ratios), 3)}')
-        print(f'- Avg hit ratio of test strategy: {round(sum(test_hit_ratios) / len(test_hit_ratios), 3)}')
+            print(f'- Avg hit ratio of ctrl strategy: {round(sum(control_hit_ratios) / len(control_hit_ratios), 3)}')
+            print(f'- Avg hit ratio of test strategy: {round(sum(test_hit_ratios) / len(test_hit_ratios), 3)}')
 
-        if t_test_result.pvalue < 0.05:
-            print(f'- Result: REJECT null hypothesis (p-value: {t_test_result.pvalue})\n')
-        else:
-            print(f'- Result: ACCEPT null hypothesis (p-value: {t_test_result.pvalue})\n')
+            if t_test_result.pvalue < 0.05:
+                print(f'- Result: REJECT null hypothesis (p-value: {t_test_result.pvalue})\n')
+            else:
+                print(f'- Result: ACCEPT null hypothesis (p-value: {t_test_result.pvalue})\n')
 
 
-test_dataset_name = 'movielens_small'
+test_dataset_name = 'ml-1m'
 test_repeating_times = 100
 
 # USER GUIDE: add the  questioning strategies to evaluate here
 questioning_strategies = [questioning_random, questioning_favorite, questioning_rated_most, questioning_maniac]
 # USER GUIDE: add the  matching strategies to evaluate here
-matching_strategies = [matching_random]
+matching_strategies = [matching_random, matching_least_diff]
 
 # print_eval_result(test_dataset_name, test_repeating_times, questioning_strategies, matching_strategies)
 
@@ -94,7 +95,8 @@ matching_strategies = [matching_random]
 SAMPLE_SIZE = 100
 N_SAMPLES = 100
 
-print_t_test_result(test_dataset_name, questioning_strategies, SAMPLE_SIZE, N_SAMPLES)
+# print_t_test_result(test_dataset_name, matching_strategies, questioning_strategies, SAMPLE_SIZE, N_SAMPLES)
+print_t_test_result(test_dataset_name, matching_strategies, [questioning_rated_most], SAMPLE_SIZE, N_SAMPLES)
 
 
 

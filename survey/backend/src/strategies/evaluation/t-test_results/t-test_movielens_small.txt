@@ -17,3 +17,16 @@
 - Avg hit ratio of ctrl strategy: 0.002
 - Avg hit ratio of test strategy: 0.02
 - Result: REJECT null hypothesis (p-value: 4.698996397648275e-31)
+
+
+---
+
+## T-test result of [q=rated_by_the_most, m=random] (sample_size=100, n_samples=100)
+- Avg hit ratio of ctrl strategy: 0.001
+- Avg hit ratio of test strategy: 0.007
+- Result: REJECT null hypothesis (p-value: 9.477958421778748e-09)
+
+## T-test result of [q=rated_by_the_most, m=least_diff] (sample_size=100, n_samples=100)
+- Avg hit ratio of ctrl strategy: 0.001
+- Avg hit ratio of test strategy: 0.006
+- Result: REJECT null hypothesis (p-value: 9.803922732371887e-09)
