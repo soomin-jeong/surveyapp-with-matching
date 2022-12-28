@@ -58,7 +58,7 @@ def print_t_test_result(dataset_name, matching_strategies, questioning_strategie
         return hit_ratio_samples
 
     CONTROL_MATCHING_STRATEGY = matching_random
-    CONTROL_QUESTIONING_STRATEGY = questioning_rated_most
+    CONTROL_QUESTIONING_STRATEGY = questioning_random
 
     control_hit_ratios = collect_hit_ratio(dataset_name, CONTROL_QUESTIONING_STRATEGY,
                                            CONTROL_MATCHING_STRATEGY, sample_size, n_samples)
