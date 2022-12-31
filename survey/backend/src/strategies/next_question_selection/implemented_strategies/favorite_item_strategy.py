@@ -1,4 +1,5 @@
 import os
+import random
 
 from backend.src.strategies.next_question_selection.abstract_class.item_selection_base_choice import BaseStrategyChoice
 from backend.src.utils.utils import convert_current_ratings_str_into_list
@@ -73,7 +74,7 @@ class Strategy(BaseStrategyChoice):
                highest_rated_item_id = each_item_id
 
         if highest_rated_item_id is None:
-            return candidate_item_ids[0]
+            return random.choice(candidate_item_ids)
 
         return int(highest_rated_item_id)
 
