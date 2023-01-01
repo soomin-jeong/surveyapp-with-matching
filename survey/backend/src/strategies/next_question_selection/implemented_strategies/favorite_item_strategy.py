@@ -64,19 +64,21 @@ class Strategy(BaseStrategyChoice):
         ratings_by_online_user = self.clustering.rating_matrix.loc[[online_user_id]]
 
         # giving the default value as low as possible
-        highest_rated_item_id = None
+        highest_rated_item_ids = []
         highest_rating_so_far = - float('inf')
 
-        # pick the item with highest rating by an online user
+        # pick the item with the highest rating by an online user
         for each_item_id in candidate_item_ids:
             rating = ratings_by_online_user[each_item_id].values[0]
             if rating and rating > highest_rating_so_far:
-               highest_rated_item_id = each_item_id
+               highest_rated_item_ids = [each_item_id]
+            elif rating and rating == highest_rating_so_far:
+                highest_rated_item_ids.append(each_item_id)
 
-        if highest_rated_item_id is None:
+        if highest_rated_item_ids == []:
             return random.choice(candidate_item_ids)
 
-        return int(highest_rated_item_id)
+        return int(random.choice(highest_rated_item_ids))
 
 
 
