@@ -9,7 +9,7 @@ class abstract_attribute(object):
         raise NotImplementedError("This attribute was not set in a subclass")
 
 
-class BaseStrategyChoice(BaseStrategy):
+class BaseStrategyRate(BaseStrategy):
 
     @abc.abstractmethod
     def get_next_item(self, current_ratings: dict):

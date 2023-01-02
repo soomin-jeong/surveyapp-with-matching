@@ -1,8 +1,4 @@
-import time
-
-import numpy as np
 import statistics
-
 import scipy.stats as stats
 import matplotlib.pyplot as plt
 
@@ -21,16 +17,7 @@ from backend.src.strategies.matchmaking.implemented_strategies.random_matchmakin
 from backend.src.strategies.matchmaking.implemented_strategies.least_diff_matching_strategy import \
             Strategy as matching_least_diff
 
-
-
 def print_t_test_result(dataset_name, matching_strategies, questioning_strategies, sample_size, n_samples):
-    '''
-
-    Returns:
-        Rejects N0 : Rejects null hypothesis; hence, it is meaningful
-        Accept N0 : Accepts null hypothesis; hence, it is NOT meaningful
-
-    '''
 
     def collect_hit_ratio(dataset_name, questioning_strategy, matching_strategy, sample_size: int, n_samples: int):
         hit_ratio_samples = []
