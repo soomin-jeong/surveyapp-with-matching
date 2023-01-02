@@ -83,9 +83,9 @@ def print_t_test_result(dataset_name, matching_strategies, questioning_strategie
             print(f'[{each_q_strategy.strategy_name}] normal dist p-val: {test_normality.pvalue}')
 
             if control_normality.pvalue >= 0.05:
-                print(f'✅ [{CONTROL_MATCHING_STRATEGY.strategy_name}] is normally distributed')
+                print(f'✅ [{CONTROL_QUESTIONING_STRATEGY.strategy_name}] is normally distributed')
             else:
-                print(f'❌ [{CONTROL_MATCHING_STRATEGY.strategy_name}] is NOT normally distributed')
+                print(f'❌ [{CONTROL_QUESTIONING_STRATEGY.strategy_name}] is NOT normally distributed')
 
             if test_normality.pvalue >= 0.05:
                 print(f'✅ [{each_q_strategy.strategy_name}] is normally distributed')
@@ -159,9 +159,9 @@ matching_strategies = [matching_random, matching_least_diff]
 # test_dataset_names = ['movielens_small', 'ml-100k', 'ml-1m']
 
 
-# print_t_test_result('movielens_small', [matching_random], questioning_strategies, 5500, 100)
-# print_t_test_result('ml-100k', [matching_random], questioning_strategies, 7500, 100)
-print_t_test_result('ml-1m', [matching_random], questioning_strategies, 80000, 100)
+print_t_test_result('movielens_small', [matching_random], [questioning_random], 5500, 100)
+print_t_test_result('ml-100k', [matching_random], [questioning_random], 7500, 100)
+print_t_test_result('ml-1m', [matching_random], [questioning_random], 80000, 100)
 
 
 
