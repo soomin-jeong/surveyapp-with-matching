@@ -1,39 +1,69 @@
-## T-test result of [q=random_item, m=random] (sample_size=100, n_samples=100)
-- Avg hit ratio of ctrl strategy: 0.001
-- Avg hit ratio of test strategy: 0.001
-- Result: ACCEPT null hypothesis (p-value: 0.15886970489441143)
+1: NORMALITY
+[random] normal dist p-val: 0.07554585486650467
+[favorite_item] normal dist p-val: 0.06743961572647095
+✅ [random] is normally distributed
+✅ [favorite_item] is normally distributed
 
-## T-test result of [q=favorite_item, m=random] (sample_size=100, n_samples=100)
+
+2: VARIANCE
+[random] variance: 1.0859708193041526e-07
+[favorite_item] variance: 2.5728395061728396e-07
+❌ Variances are NOT similar (pval >= 0.05)
+
+
+3. RankSum result of [q=favorite_item, m=random] (sample_size=7500, n_samples=100)
 - Avg hit ratio of ctrl strategy: 0.001
 - Avg hit ratio of test strategy: 0.002
-- Result: ACCEPT null hypothesis (p-value: 0.4919733209209476)
+- ✅ Result: REJECT null hypothesis (p-value: 7.34085886562024e-10)
 
-## T-test result of [q=rated_by_the_most, m=random] (sample_size=100, n_samples=100)
-- Avg hit ratio of ctrl strategy: 0.001
-- Avg hit ratio of test strategy: 0.008
-- Result: REJECT null hypothesis (p-value: 5.669999237259213e-13)
 
-## T-test result of [q=maniac, m=random] (sample_size=100, n_samples=100)
+4. T-test result of [q=favorite_item, m=random] (sample_size=7500, n_samples=100)
 - Avg hit ratio of ctrl strategy: 0.001
-- Avg hit ratio of test strategy: 0.017
-- Result: REJECT null hypothesis (p-value: 1.8207640602738728e-23)
+- Avg hit ratio of test strategy: 0.002
+- ✅ Result: REJECT null hypothesis (p-value: 4.208964542790015e-11)
 
-## T-test result of [q=random_item, m=least_diff] (sample_size=100, n_samples=100)
-- Avg hit ratio of ctrl strategy: 0.001
-- Avg hit ratio of test strategy: 0.001
-- Result: ACCEPT null hypothesis (p-value: 0.2509679035275899)
 
-## T-test result of [q=favorite_item, m=least_diff] (sample_size=100, n_samples=100)
-- Avg hit ratio of ctrl strategy: 0.001
-- Avg hit ratio of test strategy: 0.001
-- Result: ACCEPT null hypothesis (p-value: 1.0)
+[rated_by_the_most] normal dist p-val: 0.5375704169273376
+✅ [random] is normally distributed
+✅ [rated_by_the_most] is normally distributed
 
-## T-test result of [q=rated_by_the_most, m=least_diff] (sample_size=100, n_samples=100)
-- Avg hit ratio of ctrl strategy: 0.001
-- Avg hit ratio of test strategy: 0.008
-- Result: REJECT null hypothesis (p-value: 4.1348534347917e-11)
 
-## T-test result of [q=maniac, m=least_diff] (sample_size=100, n_samples=100)
+2: VARIANCE
+[random] variance: 1.0859708193041526e-07
+[rated_by_the_most] variance: 1.1345885521885522e-06
+❌ Variances are NOT similar (pval >= 0.05)
+
+
+3. RankSum result of [q=rated_by_the_most, m=random] (sample_size=7500, n_samples=100)
 - Avg hit ratio of ctrl strategy: 0.001
-- Avg hit ratio of test strategy: 0.015
-- Result: REJECT null hypothesis (p-value: 4.4384580842010004e-23)
+- Avg hit ratio of test strategy: 0.007
+- ✅ Result: REJECT null hypothesis (p-value: 2.5239394239903128e-34)
+
+
+4. T-test result of [q=rated_by_the_most, m=random] (sample_size=7500, n_samples=100)
+- Avg hit ratio of ctrl strategy: 0.001
+- Avg hit ratio of test strategy: 0.007
+- ✅ Result: REJECT null hypothesis (p-value: 3.9356861951632475e-87)
+
+
+ [maniac] normal dist p-val: 0.06006766855716705
+✅ [random] is normally distributed
+✅ [maniac] is normally distributed
+
+
+2: VARIANCE
+[random] variance: 1.0859708193041526e-07
+[maniac] variance: 2.3521903479236813e-06
+❌ Variances are NOT similar (pval >= 0.05)
+
+
+3. RankSum result of [q=maniac, m=random] (sample_size=7500, n_samples=100)
+- Avg hit ratio of ctrl strategy: 0.001
+- Avg hit ratio of test strategy: 0.016
+- ✅ Result: REJECT null hypothesis (p-value: 2.5239394239903128e-34)
+
+
+4. T-test result of [q=maniac, m=random] (sample_size=7500, n_samples=100)
+- Avg hit ratio of ctrl strategy: 0.001
+- Avg hit ratio of test strategy: 0.016
+- ✅ Result: REJECT null hypothesis (p-value: 8.603286464334137e-106)
