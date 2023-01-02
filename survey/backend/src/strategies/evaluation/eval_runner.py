@@ -159,9 +159,9 @@ matching_strategies = [matching_random, matching_least_diff]
 # test_dataset_names = ['movielens_small', 'ml-100k', 'ml-1m']
 
 
-print_t_test_result('movielens_small', [matching_random], [questioning_random], 5500, 100)
-print_t_test_result('ml-100k', [matching_random], [questioning_random], 7500, 100)
-print_t_test_result('ml-1m', [matching_random], [questioning_random], 80000, 100)
+print_t_test_result('movielens_small', [matching_least_diff], [questioning_rated_most], 5500, 100)
+print_t_test_result('ml-100k', [matching_least_diff], [questioning_rated_most], 7500, 100)
+print_t_test_result('ml-1m', [matching_least_diff], [questioning_rated_most], 80000, 100)
 
 
 
