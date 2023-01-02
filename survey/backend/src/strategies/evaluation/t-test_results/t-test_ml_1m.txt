@@ -1,12 +1,12 @@
 1: NORMALITY
-[random] normal dist p-val: 0.25562378764152527
+[random_item] normal dist p-val: 0.25562378764152527
 [favorite_item] normal dist p-val: 0.6422046422958374
-✅ [random] is normally distributed
+✅ [random_item] is normally distributed
 ✅ [favorite_item] is normally distributed
 
 
 2: VARIANCE
-[random] variance: 1.9138099747474746e-09
+[random_item] variance: 1.9138099747474746e-09
 [favorite_item] variance: 3.6910353535353533e-09
 ❌ Variances are NOT similar (pval >= 0.05)
 
@@ -24,12 +24,12 @@
 
 
 [rated_by_the_most] normal dist p-val: 0.8547858595848083
-✅ [random] is normally distributed
+✅ [random_item] is normally distributed
 ✅ [rated_by_the_most] is normally distributed
 
 
 2: VARIANCE
-[random] variance: 1.9138099747474746e-09
+[random_item] variance: 1.9138099747474746e-09
 [rated_by_the_most] variance: 6.639441287878787e-09
 ❌ Variances are NOT similar (pval >= 0.05)
 
@@ -47,12 +47,12 @@
 
 
 [maniac] normal dist p-val: 0.7976362109184265
-✅ [random] is normally distributed
+✅ [random_item] is normally distributed
 ✅ [maniac] is normally distributed
 
 
 2: VARIANCE
-[random] variance: 1.9138099747474746e-09
+[random_item] variance: 1.9138099747474746e-09
 [maniac] variance: 7.651633522727274e-08
 ❌ Variances are NOT similar (pval >= 0.05)
 
