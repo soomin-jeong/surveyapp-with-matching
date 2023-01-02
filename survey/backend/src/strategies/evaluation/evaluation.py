@@ -1,13 +1,8 @@
 import random
-
 from backend.src.strategies.next_question_selection.abstract_class.item_selection_base_choice import BaseStrategyChoice as QuestioningStrategyBase
 from backend.src.strategies.matchmaking.abstract_class.matching_strategy_base import BaseStrategy as MatchingStrategyBase
-
-
-
 from backend.src.strategies.next_question_selection.user_cluster_with_representative_item import \
     get_cluster_matched_up_to_now
-
 from backend.src.strategies.preprocessing.hierarchical_clustering import HierarchicalCluster, UserCluster
 from backend.src.utils.utils import convert_current_ratings_str_into_list
 
