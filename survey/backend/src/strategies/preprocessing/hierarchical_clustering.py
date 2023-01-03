@@ -138,7 +138,6 @@ class HierarchicalCluster:
         # run k-means clusters based on elbow method
         curr_rating_matrix = self.rating_matrix.loc[curr_cluster.user_ids].dropna(axis=1, how='all')
 
-        # TODO: consider other options for the fillna
         # filling the missing data with the column-wise (item-wise) average rating of the item
         curr_rating_matrix = curr_rating_matrix.fillna(self.rating_matrix.mean(), axis=0)
         # curr_rating_matrix = curr_rating_matrix.fillna(-1, axis=0)
