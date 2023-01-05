@@ -18,12 +18,11 @@ class Strategy(BaseStrategyChoice):
     def add_representative_item_to_user_clusters_in_hc(self, curr_cluster: UserCluster):
         self.add_representative_items_to_children(curr_cluster)
 
-        # TODO: add the comment why we go through loop here as an external layer of recursive function
+        # Go through loop here as an external layer of recursive function
+        # so that we can add a logic to compare representative items at the same level (i.e. deduplication)
         for each_child_cluster in curr_cluster.child_clusters:
             self.add_representative_item_to_user_clusters_in_hc(each_child_cluster)
 
-        # if there are collisions among the representative items in child clusters
-        # re-select the representative item to avoid the collision
 
     def add_representative_items_to_children(self, parent_cluster: UserCluster):
         child_clusters_with_rep_item = []
