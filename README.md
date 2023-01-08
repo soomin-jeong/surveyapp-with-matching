@@ -15,7 +15,9 @@ The thesis at hand implemented 3 different strategies and evaluated the accuracy
 
 ## File Structure
 <details>
+
 ```
+
 ├── README.md
 └── survey
   ...
@@ -147,5 +149,7 @@ The thesis at hand implemented 3 different strategies and evaluated the accuracy
     │       │       ├── matrix_builder.py                   # rearranging rating data into user-item matrix
     │       │       └── unittests.py
     ...
+    
 ```
+
 </details>
